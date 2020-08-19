@@ -372,10 +372,10 @@ summary {
 <div id="using-the-dplyr-package-data-cleaning-functions-and-more-to-draft-and-compete-a-team-in-a-javelin-event." class="section level2">
 <h2>Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.</h2>
 <p>This is a project that I did using track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the womens javelin.</p>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 <div id="first-im-going-to-read-in-the-data." class="section level4">
-<h4>First Iâm going to read in the data.</h4>
+<h4>First I'm going to read in the data.</h4>
 <pre class="r"><code>head(data)</code></pre>
 <pre><code>## # A tibble: 6 x 10
 ##   Event Male_Female EventID Athlete Flight1 Flight2 Flight3 Flight4 Flight5
@@ -390,21 +390,21 @@ summary {
 </div>
 <div id="this-is-what-first-5-rows-of-the-uncleaned-data-looks-like." class="section level4">
 <h4>This is what first 5 rows of the uncleaned data looks like.</h4>
-<p>Â <br />
-Iâm going to clean it up a bit. The changes Iâll make include:</p>
+<p><br />
+I'm going to clean it up a bit. The changes I'll make include:</p>
 <ol style="list-style-type: decimal">
 <li><p>Male and Female are their own columns</p></li>
 <li><p>Going to gather the data from wide to long so there is only 1 column for throws</p></li>
 <li><p>Select the Womens Javelin event</p></li>
-<li><p>Change the column labeled âDistanceâ to the data type to numeric to make later analysis easier</p></li>
+<li><p>Change the column labeled "Distance" to the data type to numeric to make later analysis easier</p></li>
 </ol>
 <pre><code>## # A tibble: 2 x 4
 ##   EventID Athlete         Flight Distance
 ##     &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;    &lt;dbl&gt;
 ## 1       8 Brittany Borman      1     54.0
 ## 2       8 Ariana Ince          1     49.0</code></pre>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 </div>
 <div id="the-next-step-is-to-create-the-total-results-for-each-event-for-each-athlete-as-well-as-create-some-summary-statistics-to-better-describe-their-performance." class="section level4">
 <h4>The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.</h4>
@@ -415,11 +415,11 @@ Iâm going to clean it up a bit. The changes Iâll make include:</p>
       summarize(TotalDistance = sum(Distance), 
           StandardDev = round(sd(Distance),3),
               Success = n())</code></pre>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 </div>
 <div id="now-ill-find-the-difference-between-the-persons-last-3-and-first-3-throws-and-then-use-a-left-join-to-combine-this-data-with-the-javelin_total-data-frame." class="section level4">
-<h4>Now Iâll find the difference between the persons last 3 and first 3 throws and then use a left join to combine this data with the javelin_total data frame.</h4>
+<h4>Now I'll find the difference between the persons last 3 and first 3 throws and then use a left join to combine this data with the javelin_total data frame.</h4>
 <pre><code>## # A tibble: 5 x 5
 ## # Groups:   Athlete [1]
 ##   Athlete       TotalDistance StandardDev Success    diff
@@ -429,11 +429,11 @@ Iâm going to clean it up a bit. The changes Iâll make include:</p>
 ## 3 Abigail Gomez          207.        2.97       4 -110.  
 ## 4 Abigail Gomez          222.        1.30       4   -3.11
 ## 5 Abigail Gomez          155.        1.03       3   53.4</code></pre>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 </div>
 <div id="lets-normalize-the-summary-statistics-so-they-can-be-properly-compared." class="section level4">
-<h4>Letâs normalize the summary statistics so they can be properly compared.</h4>
+<h4>Let's normalize the summary statistics so they can be properly compared.</h4>
 <p>The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values.</p>
 <pre class="r"><code>#function to normalize summary stats
 
@@ -460,11 +460,11 @@ javelin_norm &lt;- javelin_totals %&gt;%
 ##   # Using lambdas
 ##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
 ## This warning is displayed once per session.</code></pre>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 </div>
 <div id="to-determine-who-the-best-athletes-are-lets-assign-weights-to-the-athletes-for-their-distance-standard-deviation-of-distance-if-they-were-successful-in-their-throw-and-the-difference-in-their-throws.-weights-sum-to-10." class="section level4">
-<h4>To determine who the best athletes are, letâs assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10.</h4>
+<h4>To determine who the best athletes are, let's assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10.</h4>
 <pre class="r"><code>weights &lt;- c(3.5, 2, 3, 1.5)
 
 #creating total score by multiplying columns by their weights
@@ -472,11 +472,11 @@ javelin_team &lt;- javelin_norm %&gt;%
 mutate(TotalScore = TotalDistance * weights[1] + StandardDev * weights[2] +
        Success + weights[3] + diff * weights[4]) %&gt;%
 arrange(desc(TotalScore))</code></pre>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 </div>
 <div id="were-going-to-cheat-a-bit-and-take-the-top-five-athletes-for-our-team.-once-we-have-our-team-lets-have-a-look-at-their-stats." class="section level4">
-<h4>Weâre going to cheat a bit and take the top five athletes for our team. Once we have our team, letâs have a look at their stats.</h4>
+<h4>We're going to cheat a bit and take the top five athletes for our team. Once we have our team, let's have a look at their stats.</h4>
 <pre class="r"><code>#selecting first five rows to pick athletes for our team
 javelin_team&lt;- javelin_team[1:5,]
 javelin_team
@@ -489,7 +489,7 @@ Ath &lt;- javelin_team$Athlete
 team_stats &lt;- javelin_totals %&gt;% 
   filter(Athlete %in% Ath) %&gt;%
     summarize_all(funs(mean))</code></pre>
-<p>And hereâs our team.</p>
+<p>And here's our team.</p>
 <pre><code>## # A tibble: 5 x 5
 ##   Athlete             TotalDistance StandardDev Success  diff
 ##   &lt;chr&gt;                       &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
@@ -498,11 +498,11 @@ team_stats &lt;- javelin_totals %&gt;%
 ## 3 Heather Bergmann             283.        2.28    6     2.41
 ## 4 Madalaine Stulce             275.        4.47    6    -6.42
 ## 5 Maggie Malone                293.        2.00    5    61.1</code></pre>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 </div>
 <div id="now-lets-select-random-athletes-from-athletes-not-on-our-team-to-play-against-us.-were-going-to-create-a-fake-meet-to-see-if-our-teams-total-would-be-higher-than-the-others." class="section level4">
-<h4>Now, letâs select random athletes from athletes not on our team to play against us. Weâre going to create a fake meet to see if our teams total would be higher than the others.</h4>
+<h4>Now, lets select random athletes from athletes not on our team to play against us. We're going to create a fake meet to see if our teams total would be higher than the others.</h4>
 <pre class="r"><code>set.seed(77)
 home &lt;- c(2,3,5)
 away &lt;- sample(1:nrow(javelin_totals), 3, replace=FALSE)
@@ -518,8 +518,8 @@ print(paste0(&quot;Javelin match, Final Score: &quot;, HomeTeam, &quot; - &quot;
 </div>
 <div id="since-we-had-the-best-team-unsurprisingly-our-team-won-the-match." class="section level4">
 <h4>Since We had the best team, unsurprisingly our team won the match.</h4>
-<p>Â <br />
-Â </p>
+<p><br />
+</p>
 </div>
 </div>
 
