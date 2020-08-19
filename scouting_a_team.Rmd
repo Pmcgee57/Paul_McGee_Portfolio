@@ -1,0 +1,207 @@
+---
+title: "Scouting an Athletics Team"
+author: "Paul McGee"
+date: "8/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.
+
+This is a project that I did using  track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the womens javelin.
+
+&nbsp;  
+&nbsp;
+
+#### First I'm going to read in the data.
+
+```{r, include = FALSE}
+library(tidyverse)
+library(readxl)
+data <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/athletics.xlsx")
+```
+```{r}
+head(data)
+```
+
+#### This is what first 5 rows of the uncleaned data looks like.
+
+&nbsp;  
+I'm going to clean it up a bit. The changes I'll make include: 
+
+1. Male and Female are their own columns
+
+2. Going to gather the data from wide to long so there is only 1 column for throws
+
+3. Select the Womens Javelin event
+
+4. Change the column labeled "Distance" to the data type to numeric to make later analysis easier 
+
+
+```{r, include = FALSE}
+# Select the results of interest: women's javelin
+head(data)
+javelin <- data %>% filter(Event == "Javelin", Male_Female == "Female")
+javelin$Event <- NULL
+javelin$Male_Female <- NULL
+head(javelin)
+
+# Assign the tidy data to javelin_long
+head(javelin)
+lapply(javelin,class)
+javelin_long <- javelin %>% gather(Flight, Distance, Flight1:Flight6)
+
+# Make Flight a numeric
+javelin_long$Flight <- gsub("Flight", "", javelin_long$Flight)
+javelin_long$Flight <- as.numeric(javelin_long$Flight)
+```
+
+```{r, echo = FALSE }
+# Examine the first 6 rows
+head(javelin_long,2)
+```
+
+&nbsp;  
+&nbsp;  
+
+
+#### The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.
+These stats include total distance thrown, standard deviation of their throws and the number of successful throws they had.
+
+```{r}
+javelin_totals <- javelin_long %>%
+  filter(Distance > 0) %>%
+    group_by(Athlete, EventID) %>%
+      summarize(TotalDistance = sum(Distance), 
+          StandardDev = round(sd(Distance),3),
+              Success = n())
+```
+```{r, include = FALSE}
+javelin_totals[1:5,]
+```
+
+&nbsp;  
+&nbsp;  
+
+#### Now I'll find the difference between the persons last 3 and first 3 throws and then use a left join to combine this data with the javelin_total data frame.
+
+```{r, echo = FALSE}
+# Create first_3, last_3, and diff between the two
+javelin <- javelin %>% mutate(first_3 = Flight1 + Flight2 + Flight3 , last_3 = Flight4 + Flight5 + Flight6, diff = last_3 - first_3)
+
+#Select columns to to keep from javelin and javelin totals
+keep <- c("Athlete", "TotalDistance", "StandardDev", "Success", "diff")
+javelin_totals <- left_join(javelin_totals, javelin, by = c("EventID", "Athlete"), all.x = T) %>% subset( select = keep)
+head(javelin_totals, 5)
+```
+
+&nbsp;  
+&nbsp;  
+
+#### Let's normalize the summary statistics so they can be properly compared. 
+The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values so that they can be used for comparison. 
+```{r, results="hide"}
+#function to normalize summary stats
+
+norm <- function(result) {
+    (result - min(result)) / (max(result) - min(result))
+}
+
+aggstats <- c("TotalDistance", "StandardDev", "Success", "diff")
+
+javelin_norm <- javelin_totals %>%
+  ungroup() %>%
+    mutate_at(aggstats, norm) %>%
+      group_by(Athlete) %>%
+        summarize_all(funs(mean))
+```
+
+&nbsp;  
+&nbsp;  
+
+#### To determine who the best athletes are, let's assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10.
+
+```{r, results="hide"}
+weights <- c(3.5, 2, 3, 1.5)
+
+#creating total score by multiplying columns by their weights
+javelin_team <- javelin_norm %>%
+mutate(TotalScore = TotalDistance * weights[1] + StandardDev * weights[2] +
+       Success + weights[3] + diff * weights[4]) %>%
+arrange(desc(TotalScore))
+```
+
+&nbsp;  
+&nbsp;  
+
+#### We're going to cheat a bit and take the top five athletes for our team. Once we have our team, let's have a look at their stats.
+```{r, results="hide"}
+
+#selecting first five rows to pick athletes for our team
+javelin_team<- javelin_team[1:5,]
+javelin_team
+
+#Selecting athlete names from our team
+head(javelin_totals,1)
+Ath <- javelin_team$Athlete
+
+#Compiling our teams stats 
+team_stats <- javelin_totals %>% 
+  filter(Athlete %in% Ath) %>%
+    summarize_all(funs(mean))
+```
+
+And here's our team.
+```{r, echo=FALSE}
+head(team_stats)
+```
+
+&nbsp;  
+&nbsp;
+
+#### Now, let's select  random athletes from athletes not on our team to play against us. We're going to create a fake meet to see if our teams total would be higher than the others.
+```{r}
+set.seed(77)
+home <- c(2,3,5)
+away <- sample(1:nrow(javelin_totals), 3, replace=FALSE)
+
+HomeTeam <- round(sum(team_stats$TotalDistance[home]),2)
+AwayTeam <- round(sum(javelin_totals$TotalDistance[away]),2)
+
+print(paste0("Javelin match, Final Score: ", HomeTeam, " - ", AwayTeam))
+ifelse(HomeTeam > AwayTeam, print("Your team won the match!"), print("Sorry, you lost."))
+```
+
+#### Since we had the best team, unsurprisingly our team won the match.
+&nbsp;  
+&nbsp;
+
+
+
+<br>
+
+**Now let's look at the filenames**. We can recognize the names of the webpages we've seen, and there is also a `_site.yml` file, which is the website's configuration file. The simplest website possible would have 2 files only: `_site.yml` and `index.Rmd`
+
+![](https://docs.google.com/drawings/d/1jnXfeJ3i-fwd-t49S5FyeMAX3cJSoCYbyZLLTqFZd7w/pub?w=960&h=720)
+
+<br>
+
+## Fork to your account, clone to your computer
+
+Let's start digging deeper and playing with this.  
+
+1. Fork the [jules32/rmarkdown-website-tutorial](https://github.com/jules32/rmarkdown-website-tutorial) repo into your own account. 
+
+2. Edit the URL for the website by replacing `jules32` with your GitHub username
+
+3. Clone to your local computer using RStudio (preferred) the [Desktop App](https://desktop.github.com/), or the command line.
+
+![](https://docs.google.com/drawings/d/1yy2VFQy4QqxfOzt-XtTSNA91qoCI7jPo0ob7Pm89SBg/pub?w=960&h=720)
+
+
+
+
+
