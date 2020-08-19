@@ -176,32 +176,4 @@ ifelse(HomeTeam > AwayTeam, print("Your team won the match!"), print("Sorry, you
 ```
 
 #### Since we had the best team, unsurprisingly our team won the match.
-&nbsp;  
-&nbsp;
-
-
-
 <br>
-
-**Now let's look at the filenames**. We can recognize the names of the webpages we've seen, and there is also a `_site.yml` file, which is the website's configuration file. The simplest website possible would have 2 files only: `_site.yml` and `index.Rmd`
-
-![](https://docs.google.com/drawings/d/1jnXfeJ3i-fwd-t49S5FyeMAX3cJSoCYbyZLLTqFZd7w/pub?w=960&h=720)
-
-<br>
-
-## Fork to your account, clone to your computer
-
-Let's start digging deeper and playing with this.  
-
-1. Fork the [jules32/rmarkdown-website-tutorial](https://github.com/jules32/rmarkdown-website-tutorial) repo into your own account. 
-
-2. Edit the URL for the website by replacing `jules32` with your GitHub username
-
-3. Clone to your local computer using RStudio (preferred) the [Desktop App](https://desktop.github.com/), or the command line.
-
-![](https://docs.google.com/drawings/d/1yy2VFQy4QqxfOzt-XtTSNA91qoCI7jPo0ob7Pm89SBg/pub?w=960&h=720)
-
-
-
-
-

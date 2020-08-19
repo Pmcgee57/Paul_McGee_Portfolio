@@ -382,6 +382,18 @@ javelin_norm &lt;- javelin_totals %&gt;%
     mutate_at(aggstats, norm) %&gt;%
       group_by(Athlete) %&gt;%
         summarize_all(funs(mean))</code></pre>
+<pre><code>## Warning: funs() is soft deprecated as of dplyr 0.8.0
+## Please use a list of either functions or lambdas: 
+## 
+##   # Simple named list: 
+##   list(mean = mean, median = median)
+## 
+##   # Auto named with `tibble::lst()`: 
+##   tibble::lst(mean, median)
+## 
+##   # Using lambdas
+##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+## This warning is displayed once per session.</code></pre>
 <p> <br />
  </p>
 </div>
@@ -440,23 +452,8 @@ print(paste0(&quot;Javelin match, Final Score: &quot;, HomeTeam, &quot; - &quot;
 </div>
 <div id="since-we-had-the-best-team-unsurprisingly-our-team-won-the-match." class="section level4">
 <h4>Since we had the best team, unsurprisingly our team won the match.</h4>
-<p> <br />
- </p>
-<p><br></p>
-<p><strong>Now let’s look at the filenames</strong>. We can recognize the names of the webpages we’ve seen, and there is also a <code>_site.yml</code> file, which is the website’s configuration file. The simplest website possible would have 2 files only: <code>_site.yml</code> and <code>index.Rmd</code></p>
-<p><img src="https://docs.google.com/drawings/d/1jnXfeJ3i-fwd-t49S5FyeMAX3cJSoCYbyZLLTqFZd7w/pub?w=960&amp;h=720" /></p>
 <p><br></p>
 </div>
-</div>
-<div id="fork-to-your-account-clone-to-your-computer" class="section level2">
-<h2>Fork to your account, clone to your computer</h2>
-<p>Let’s start digging deeper and playing with this.</p>
-<ol style="list-style-type: decimal">
-<li><p>Fork the <a href="https://github.com/jules32/rmarkdown-website-tutorial">jules32/rmarkdown-website-tutorial</a> repo into your own account.</p></li>
-<li><p>Edit the URL for the website by replacing <code>jules32</code> with your GitHub username</p></li>
-<li><p>Clone to your local computer using RStudio (preferred) the <a href="https://desktop.github.com/">Desktop App</a>, or the command line.</p></li>
-</ol>
-<p><img src="https://docs.google.com/drawings/d/1yy2VFQy4QqxfOzt-XtTSNA91qoCI7jPo0ob7Pm89SBg/pub?w=960&amp;h=720" /></p>
 </div>
 
 
