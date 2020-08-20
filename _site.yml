@@ -4,11 +4,11 @@ navbar:
   left:
     - text: "Scouting an Athletics Team"
       href: scouting_a_team.html
-    - text: "Basic Workflow"
+    - text: "Project 2"
       href: basic_workflow.html
-    - text: "Getting Sophisticated"
+    - text: "Project 3"
       href: getting_sophisticated.html
-    - text: "Your Turn"
+    - text: "Project 4"
       href: your_turn.html
 output_dir: "."
 output:

@@ -276,13 +276,13 @@ $(document).ready(function () {
   <a href="scouting_a_team.html">Scouting an Athletics Team</a>
 </li>
 <li>
-  <a href="basic_workflow.html">Basic Workflow</a>
+  <a href="basic_workflow.html">Project 2</a>
 </li>
 <li>
-  <a href="getting_sophisticated.html">Getting Sophisticated</a>
+  <a href="getting_sophisticated.html">Project 3</a>
 </li>
 <li>
-  <a href="your_turn.html">Your Turn</a>
+  <a href="your_turn.html">Project 4</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -382,18 +382,6 @@ javelin_norm &lt;- javelin_totals %&gt;%
     mutate_at(aggstats, norm) %&gt;%
       group_by(Athlete) %&gt;%
         summarize_all(funs(mean))</code></pre>
-<pre><code>## Warning: funs() is soft deprecated as of dplyr 0.8.0
-## Please use a list of either functions or lambdas: 
-## 
-##   # Simple named list: 
-##   list(mean = mean, median = median)
-## 
-##   # Auto named with `tibble::lst()`: 
-##   tibble::lst(mean, median)
-## 
-##   # Using lambdas
-##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
-## This warning is displayed once per session.</code></pre>
 <p> <br />
  </p>
 </div>
