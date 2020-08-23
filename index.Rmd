@@ -7,4 +7,4 @@ output:
 
 ----
 
-This is a test website for my data analytics portfolio. The first project I have put up can be found under 'Scouting an Athletics Team" 
+My name is Paul McGee and I am a recent MBA graduate from Binghamton University with a concentration in Business Analytics.I graduated in 2019 from SUNY New Paltz with a Bachelor of Science in Marketing. This site is a compilation of independent projects which I have completed relating to data analysis and data science.
