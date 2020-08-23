@@ -18,7 +18,7 @@ This project uses the cleveland heart disease dataset to discover what factors m
 
 1. age 
 2. sex 
-3. thalach - the maximum heart rate achieved.
+3. thalach - the maximum heart rate achieved. 
 &nbsp;  
 
 ### 1. Loading the data.
@@ -59,7 +59,7 @@ print(hd_sex)
 ```
 &nbsp;
 
-I'll use a t-test to see if age and maximum heart rate achieved have an effect on the risk of heart disease.
+I'll use a t-test to see if age and the maximum heart rate achieved have an effect on the risk of heart disease.
 T-tests are used to the compare means of two groups of contniuous data.
 
 &nbsp;

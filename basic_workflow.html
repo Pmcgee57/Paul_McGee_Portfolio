@@ -10,9 +10,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Paul McGee" />
 
 
-<title>Project 2</title>
+<title>Cleveland Heart Disease Project</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -275,7 +276,7 @@ $(document).ready(function () {
   <a href="scouting_a_team.html">Scouting an Athletics Team</a>
 </li>
 <li>
-  <a href="basic_workflow.html">Project 2</a>
+  <a href="basic_workflow.html">Cleveland Heart Disease Project</a>
 </li>
 <li>
   <a href="getting_sophisticated.html">Project 3</a>
@@ -295,12 +296,218 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Project 2</h1>
+<h1 class="title toc-ignore">Cleveland Heart Disease Project</h1>
+<h4 class="author">Paul McGee</h4>
+<h4 class="date">8/21/2020</h4>
 
 </div>
 
 
+<div id="using-exploratory-data-analysis-tidyverse-ggplot-and-multiple-logistic-regression-to-determine-risk-factors-for-heart-disease." class="section level2">
+<h2>Using exploratory data analysis, tidyverse, ggplot, and multiple logistic regression to determine risk factors for heart disease.</h2>
+<p>This project uses the cleveland heart disease dataset to discover what factors may increase a persons liklihood of developing heart disease. The factors I am going to focus on are</p>
+<ol style="list-style-type: decimal">
+<li>age</li>
+<li>sex</li>
+<li>thalach - the maximum heart rate achieved.  </li>
+</ol>
+<div id="loading-the-data." class="section level3">
+<h3>1. Loading the data.</h3>
+<div id="first-ill-read-the-data-in." class="section level4">
+<h4>First I’ll read the data in.</h4>
+<pre class="r"><code>head(hd_data)</code></pre>
+<pre><code>## # A tibble: 6 x 14
+##     age   sex    cp trestbps  chol   fbs restecg thalach exang oldpeak
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+## 1    63     1     1      145   233     1       2     150     0     2.3
+## 2    67     1     4      160   286     0       2     108     1     1.5
+## 3    67     1     4      120   229     0       2     129     1     2.6
+## 4    37     1     3      130   250     0       0     187     0     3.5
+## 5    41     0     2      130   204     0       2     172     0     1.4
+## 6    56     1     2      120   236     0       0     178     0     0.8
+## # ... with 4 more variables: slope &lt;dbl&gt;, ca &lt;dbl&gt;, thal &lt;dbl&gt;,
+## #   class &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div id="recoding" class="section level3">
+<h3>2. Recoding</h3>
+<div id="im-going-to-recode-a-few-variables-so-they-may-be-properly-used-in-my-analysis." class="section level4">
+<h4>I’m going to recode a few variables so they may be properly used in my analysis.</h4>
+<p>I’ll use the ‘mutate’ function from dplyr to recode class into hd, which will be 0 if no risk of heart disease is present and 1 if there is a risk present. I’ll also recode sex to a factor so there are only two levels of male and female.</p>
+<pre class="r"><code>hd_data &lt;- hd_data %&gt;% mutate(hd = ifelse(class &gt; 0, 1, 0))
 
+hd_data &lt;- hd_data %&gt;% mutate(sex = factor(sex, levels = 0:1, labels = c(&quot;Female&quot;, &quot;Male&quot;)))</code></pre>
+<p> </p>
+</div>
+</div>
+<div id="chi-square-and-t---tests" class="section level3">
+<h3>3. Chi Square and T - tests</h3>
+<div id="now-using-some-statistical-tests-ill-see-if-my-predictors-are-related-to-heart-disease." class="section level4">
+<h4>Now, using some statistical tests I’ll see if my predictors are related to heart disease.</h4>
+<p>I’ll be using the chi-squared test to see if sex has an effect on having a risk of heart disease. Since sex is a categorical, binary variable in this dataset, we use the chi-square test to compare the equivalence of two proportions.  </p>
+<ul>
+<li>Null hypothesis - sex and heart disease risk are not associated.</li>
+<li>Alt. hypothesis - sex and heart disease risk are associated.</li>
+</ul>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test with Yates&#39; continuity correction
+## 
+## data:  hd_data$sex and hd_data$hd
+## X-squared = 22.043, df = 1, p-value = 2.667e-06</code></pre>
+<p> </p>
+<p>I’ll use a t-test to see if age and maximum heart rate achieved have an effect on the risk of heart disease. T-tests are used to the compare means of two groups of contniuous data.</p>
+<p> </p>
+<ul>
+<li>Null hyppothesis - age/thalach has no effect on heart disease risk.</li>
+<li>Alt hypothesis - age/thalach has an effect on heart disease risk.</li>
+</ul>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  hd_data$age by hd_data$hd
+## t = -4.0303, df = 300.93, p-value = 7.061e-05
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -6.013385 -2.067682
+## sample estimates:
+## mean in group 0 mean in group 1 
+##        52.58537        56.62590</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  hd_data$thalach by hd_data$hd
+## t = 7.8579, df = 272.27, p-value = 9.106e-14
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  14.32900 23.90912
+## sample estimates:
+## mean in group 0 mean in group 1 
+##         158.378         139.259</code></pre>
+</div>
+<div id="all-three-tests-are-significant-at-a-p-value-of-0.05.-this-translates-to-us-rejecting-the-null-hypothesis-for-all-tests.-to-elaborate" class="section level4">
+<h4>All three tests are significant at a p-value of 0.05. This translates to us rejecting the null hypothesis for all tests. To elaborate:</h4>
+<ul>
+<li>Sex and risk of heart disease are associated</li>
+<li>Age has an effect on the risk of heart disease</li>
+<li>Maximum heart rate has an effect on the risk of heart disease</li>
+</ul>
+</div>
+</div>
+<div id="visualizing-the-variables" class="section level3">
+<h3>4. Visualizing the Variables</h3>
+<p>First I’ll recode the “hd” variable to read as “disease” if a risk is present and " no disease" if it is not present.</p>
+<pre class="r"><code>hd_data%&gt;%mutate(hd_labelled = ifelse(hd == 0, &quot;No Disease&quot;, &quot;Disease&quot;)) -&gt; hd_data</code></pre>
+<p> </p>
+<div id="now-ill-create-some-plots-to-further-illustrate-the-potential-affects-of-these-variables-on-heart-disease." class="section level4">
+<h4>Now I’ll create some plots to further illustrate the potential affects of these variables on heart-disease.</h4>
+<p><img src="basic_workflow_files/figure-html/unnamed-chunk-7-1.png" width="672" /><img src="basic_workflow_files/figure-html/unnamed-chunk-7-2.png" width="672" /><img src="basic_workflow_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<p>Based on the plots, it appears that those with heart disease tend to be older, are more likley to be male and have a lower maximum heart rate.</p>
+</div>
+</div>
+<div id="using-a-logistic-regression-to-see-test-if-age-sex-and-max-heart-rate-are-significant-predictors-of-heart-disease" class="section level3">
+<h3>5. Using a logistic regression to see test if age, sex and max heart rate are significant predictors of heart disease</h3>
+<pre><code>## 
+## Call:
+## glm(formula = hd ~ age + sex + thalach, family = &quot;binomial&quot;, 
+##     data = hd_data)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.2250  -0.8486  -0.4570   0.9043   2.1156  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  3.111610   1.607466   1.936   0.0529 .  
+## age          0.031886   0.016440   1.940   0.0524 .  
+## sexMale      1.491902   0.307193   4.857 1.19e-06 ***
+## thalach     -0.040541   0.007073  -5.732 9.93e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.98  on 302  degrees of freedom
+## Residual deviance: 332.85  on 299  degrees of freedom
+## AIC: 340.85
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   term        estimate std.error statistic       p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
+## 1 (Intercept)   3.11     1.61         1.94 0.0529       
+## 2 age           0.0319   0.0164       1.94 0.0524       
+## 3 sexMale       1.49     0.307        4.86 0.00000119   
+## 4 thalach      -0.0405   0.00707     -5.73 0.00000000993</code></pre>
+<p>At a p-value of 0.05, if the person is male and their maximum heart rate are significant predictors of their risk of heart disease.  </p>
+<div id="now-ill-calculate-odds-ratio-or" class="section level4">
+<h4>Now, I’ll calculate Odds Ratio (OR)</h4>
+<p>A logistic regression calculates the log of the odds ratio.The odds ratio is easier to interpret. It is used to quantify how strongly the presence or absence of a property is associated with the presence or absence of the outcome.</p>
+<p>So in our case, When the OR is greater than 1, we say the variable increases the Odds of having heart disease. Otherwise, we say the variable decreases the Odds of having heart disease.</p>
+<pre class="r"><code>tidy_m$OR &lt;- exp(tidy_m$estimate)
+tidy_m</code></pre>
+<pre><code>## # A tibble: 4 x 6
+##   term        estimate std.error statistic       p.value     OR
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;  &lt;dbl&gt;
+## 1 (Intercept)   3.11     1.61         1.94 0.0529        22.5  
+## 2 age           0.0319   0.0164       1.94 0.0524         1.03 
+## 3 sexMale       1.49     0.307        4.86 0.00000119     4.45 
+## 4 thalach      -0.0405   0.00707     -5.73 0.00000000993  0.960</code></pre>
+<p>The interpretation of this odds ratio would be that if the person is male, they are 4.4 times more likely to be at risk of heart disease. For a one unit increase in heart rate, the person lowers their odds of of heart disease by 0.96.</p>
+</div>
+</div>
+<div id="using-the-model-to-predict-the-probability-of-heart-disease" class="section level3">
+<h3>6. Using the model to predict the probability of heart disease</h3>
+<p>I’ll get the predicted probability of heart disease using the model and create a cut-off (0.5) to say whether it is more or less likely if this person has heart disease.</p>
+<p>This could be implemented as a decision rule for clinical use. In practice, when an individual comes in for a health check-up, the doctor would like to know the predicted probability of heart disease for specific values of the predictors. In this case, those predictors would be</p>
+<ul>
+<li>age</li>
+<li>sex</li>
+<li>maximum heart rate</li>
+</ul>
+<pre class="r"><code># get the predicted probability in our dataset using the predict() function
+pred_prob &lt;- predict(model,data = hd_data, type = &quot;response&quot;)
+head(pred_prob)</code></pre>
+<pre><code>##          1          2          3          4          5          6 
+## 0.62973925 0.91383463 0.81906287 0.14209920 0.07214477 0.30422439</code></pre>
+<pre class="r"><code># create a decision rule using probability 0.5 as cutoff and save the predicted decision into the main data frame
+hd_data$pred_hd &lt;- ifelse(pred_prob &gt;= 0.5, 1,0)</code></pre>
+<p>If we look at the heart disease dataframe, there is now a column for the probability of heart disease for every individual. I’ll create an example to show how we can add new individuals with this information to predict their probability of heart disease.</p>
+<p>This person will be a 45 year old female with a maximum heart rate of 150.</p>
+<pre class="r"><code># # create a newdata data frame to save a new case information
+newdata &lt;- data.frame(age = 45, sex = &quot;Female&quot;, thalach = 150)
+
+# # predict probability for this new case and print out the predicted value
+p_new &lt;- predict(model,newdata, type = &quot;response&quot;)</code></pre>
+<pre><code>##         1 
+## 0.1773002</code></pre>
+<p>This individual did not have a high probability of heart disease.</p>
+</div>
+<div id="model-performance" class="section level3">
+<h3>7. Model Performance</h3>
+<p>I’ll use accuracy, area under curve and a confusion matrix to show how well the model does with predicting heart disease.</p>
+<ul>
+<li>accuracy - straightforward. which is the proportion of the total number of predictions that were correct. accuracy can be misleading when the response is rare, such as when the number of observations per class is not equally distributed.</li>
+<li>area under the ROC curve - it’s independent of the change in the proportion of responders. AUC ranges from 0 to 1. The closer it gets to 1 the better the model performance.</li>
+<li>confusion matrix - cross-tabulates the predicted outcome levels against the true outcome levels.</li>
+</ul>
+<pre><code>## [1] &quot;AUC= 0.706483593612915&quot;</code></pre>
+<pre><code>## [1] &quot;Accuracy= 0.70957095709571&quot;</code></pre>
+<pre><code>## [1] &quot;Classification Error= 0.29042904290429&quot;</code></pre>
+<pre><code>##            Predicted Status
+## True Status   0   1
+##           0 122  42
+##           1  46  93</code></pre>
+<p>We can see that this model had a roughly 70% accuracy.</p>
+<p>Some ways the model could be optimzed include but are not limited to</p>
+<ul>
+<li>larger sample size</li>
+<li>checking for imbalances in data</li>
+<li>adding more variables to the model</li>
+<li>exploring other classifiers for the model</li>
+</ul>
+<p> </p>
+</div>
+</div>
 
 
 
