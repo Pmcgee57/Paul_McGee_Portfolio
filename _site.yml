@@ -4,8 +4,8 @@ navbar:
   left:
     - text: "Scouting an Athletics Team"
       href: scouting_a_team.html
-    - text: "Project 2"
-      href: basic_workflow.html
+    - text: "Cleveland Heart Disease Project"
+      href: Heart_disease.html
     - text: "Project 3"
       href: getting_sophisticated.html
     - text: "Project 4"

@@ -1,0 +1,197 @@
+---
+title: "Cleveland Heart Disease Project"
+author: "Paul McGee"
+date: "8/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(Metrics)
+```
+
+## Using exploratory data analysis, tidyverse, ggplot, and multiple logistic regression to determine risk factors for heart disease.
+
+This project uses the cleveland heart disease dataset to discover what factors may increase a persons liklihood of developing heart disease. The factors I am going to focus on are 
+
+1. age 
+2. sex 
+3. thalach - the maximum heart rate achieved.
+&nbsp;  
+
+### 1. Loading the data.
+#### First I'll read the data in.
+```{r, include = FALSE}
+library(readxl)
+hd_data <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/Cleveland_hd.xls")
+```
+```{r}
+head(hd_data)
+```
+
+### 2. Recoding
+#### I'm going to recode a few variables so they may be properly used in my analysis.
+
+I'll use the 'mutate' function from dplyr to recode class into hd,
+which will be 0 if no risk of heart disease is present and 1 if there is a risk present.
+I'll also recode sex to a factor so there are only two levels of male and female.
+```{r}
+hd_data <- hd_data %>% mutate(hd = ifelse(class > 0, 1, 0))
+
+hd_data <- hd_data %>% mutate(sex = factor(sex, levels = 0:1, labels = c("Female", "Male")))
+```
+&nbsp;
+
+### 3. Chi Square and T - tests
+#### Now, using some statistical tests I'll see if my predictors are related to heart disease. 
+I'll be using the chi-squared test to see if sex has an effect on having a risk of heart disease.
+Since sex is a categorical, binary variable in this dataset, we use the chi-square test to compare the equivalence of two proportions.
+&nbsp;
+
+* Null hypothesis - sex and heart disease risk are not associated.
+* Alt. hypothesis - sex and heart disease risk are associated.
+
+```{r, echo = FALSE}
+hd_sex <- chisq.test(hd_data$sex, hd_data$hd)
+print(hd_sex)
+```
+&nbsp;
+
+I'll use a t-test to see if age and maximum heart rate achieved have an effect on the risk of heart disease.
+T-tests are used to the compare means of two groups of contniuous data.
+
+&nbsp;
+
+* Null hyppothesis - age/thalach has no effect on heart disease risk.
+* Alt hypothesis - age/thalach has an effect on heart disease risk.
+```{r, echo = FALSE}
+hd_age <- t.test(hd_data$age ~ hd_data$hd)
+hd_heartrate <- t.test(hd_data$thalach ~ hd_data$hd)
+print (hd_age)
+print(hd_heartrate)
+```
+#### All three tests are significant at a p-value of 0.05. This translates to us rejecting the null hypothesis for all tests. To elaborate:
+* Sex and risk of heart disease are associated
+* Age has an effect on the risk of heart disease 
+* Maximum heart rate has an effect on the risk of heart disease 
+
+### 4. Visualizing the Variables
+First I'll recode the "hd" variable to read as "disease" if a risk is present and " no disease" if it is not present.
+```{r, results='hide'}
+hd_data%>%mutate(hd_labelled = ifelse(hd == 0, "No Disease", "Disease")) -> hd_data
+```
+&nbsp;
+
+#### Now I'll create some plots to further illustrate the potential affects of these variables on heart-disease.
+```{r, echo = FALSE}
+age_plot <- ggplot(data = hd_data, aes(x = hd_labelled,y = age)) + geom_boxplot() + ggtitle("Age and Heart Disease")
+age_plot
+
+# sex vs hd
+sex_plot <- ggplot(data = hd_data, aes(x = hd_labelled, fill = sex)) + 
+geom_bar(position = "fill") + ylab("Sex %") + ggtitle("Sex and Heart Disease")
+sex_plot
+#% of those with heart disease are more male than female
+
+# max heart rate vs hd
+thal_plot <- ggplot(data = hd_data,aes(x = hd_labelled, y = thalach)) + geom_boxplot() + ggtitle("Max Heart Rate and Heart Disease")
+thal_plot
+```
+
+Based on the plots, it appears that those with heart disease tend to be older, are more likley to be male and have a lower maximum heart rate.
+
+### 5. Using a logistic regression to see test if age, sex and max heart rate are significant predictors of heart disease
+
+```{r, echo=FALSE}
+model <- glm(data = hd_data, hd ~  age + sex + thalach, family = "binomial")
+
+# extract the model summary
+summary(model)
+
+# tidy up the coefficient table
+library(broom)
+tidy_m <- tidy(model)
+tidy_m
+```
+At a p-value of 0.05, if the person is male and their maximum heart rate are significant predictors of their risk of heart disease.
+&nbsp;
+
+#### Now, I'll calculate Odds Ratio (OR) 
+A logistic regression calculates the log of the odds ratio.The odds ratio is easier to interpret. It is used to quantify how strongly the presence or absence of a property is associated with the presence or absence of the outcome. 
+
+So in our case, When the OR is greater than 1, we say the variable increases the Odds of having heart disease. Otherwise, we say the variable decreases the Odds of having heart disease.
+
+```{r}
+tidy_m$OR <- exp(tidy_m$estimate)
+tidy_m
+```
+The interpretation of this odds ratio would be that if the person is male, they are 4.4 times more likely to be at risk of heart disease.
+For a one unit increase in heart rate, the person lowers their odds of of heart disease by 0.96.
+
+### 6. Using the model to predict the probability of heart disease
+I'll get the predicted probability of heart disease using the model and create a cut-off (0.5) to say whether it is more or less likely if this person has heart disease.
+
+This could be implemented as a decision rule for clinical use. In practice, when an individual comes in for a health check-up, the doctor would like to know the predicted probability of heart disease for specific values of the predictors. In this case, those predictors would be
+
+* age
+* sex
+* maximum heart rate
+```{r}
+
+# get the predicted probability in our dataset using the predict() function
+pred_prob <- predict(model,data = hd_data, type = "response")
+head(pred_prob)
+
+# create a decision rule using probability 0.5 as cutoff and save the predicted decision into the main data frame
+hd_data$pred_hd <- ifelse(pred_prob >= 0.5, 1,0)
+```
+If we look at the heart disease dataframe, there is now a column for the probability of heart disease for every individual. I'll create an example to show how we can add new individuals with this information to predict their probability of heart disease.
+
+This person will be a 45 year old female with a maximum heart rate of 150.
+```{r}
+# # create a newdata data frame to save a new case information
+newdata <- data.frame(age = 45, sex = "Female", thalach = 150)
+
+# # predict probability for this new case and print out the predicted value
+p_new <- predict(model,newdata, type = "response")
+```
+```{r, echo=FALSE}
+p_new
+```
+This individual did not have a high probability of heart disease.
+
+### 7. Model Performance
+I'll use accuracy, area under curve and a confusion matrix to show how well the model does with predicting heart disease.
+
+* accuracy - straightforward. which is the proportion of the total number of predictions that were correct. accuracy can be misleading when the response is rare, such as when the number of observations per class is not equally distributed.
+* area under the ROC curve -  it's independent of the change in the proportion of responders. AUC ranges from 0 to 1. The closer it gets to 1 the better the model performance.
+* confusion matrix - cross-tabulates the predicted outcome levels against the true outcome levels.
+```{r, include = FALSE}
+# calculate auc, accuracy, clasification error
+#area under curve. Closer to 1 = better model performance 
+
+accuracy <- accuracy(hd_data$hd, hd_data$pred_hd)
+auc <- auc(hd_data$hd, hd_data$pred_hd)
+classification_error <- ce(hd_data$hd, hd_data$pred_hd)
+```
+```{r, echo = FALSE}
+# print out the metrics on to screen
+print(paste("AUC=", auc))
+print(paste("Accuracy=", accuracy))
+print(paste("Classification Error=", classification_error))
+
+# confusion matrix
+table(hd_data$hd,hd_data$pred_hd, dnn=c("True Status","Predicted Status"))
+```
+We can see that this model had a roughly 70% accuracy. 
+
+Some ways the model could be optimzed include but are not limited to
+
+* larger sample size
+* checking for imbalances in data
+* adding more variables to the model
+* exploring other classifiers for the model
+
+&nbsp;
