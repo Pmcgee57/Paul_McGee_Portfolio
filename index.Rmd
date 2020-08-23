@@ -7,4 +7,4 @@ output:
 
 ----
 
-My name is Paul McGee and I am a recent MBA graduate from Binghamton University with a concentration in Business Analytics.I graduated in 2019 from SUNY New Paltz with a Bachelor of Science in Marketing. This site is a compilation of independent projects which I have completed relating to data analysis and data science.
+My name is Paul McGee and I am a recent MBA graduate from Binghamton University with a concentration in Business Analytics. I graduated in 2019 from SUNY New Paltz with a Bachelor of Science in Marketing. This site is a compilation of independent projects which I have completed relating to data analysis and data science.
