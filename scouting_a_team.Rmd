@@ -163,6 +163,8 @@ pool_stats
 #### I'll see how my teams stats compares to the maximum and average of distance thrown as well as the maximum and average of the difference in an athletes last three and first three throws.
 In a business setting, I could use these plots of their stats to justify why I would want these athletes on my team. We can see all our athletes throw well above the average, with two of our athletes throwing longer on their last three then first three throws. We could say these are our "clutch" players. 
 
+The maximum stat is represented by the solid line and the average by the dashed.
+
 ```{r, echo=FALSE}
 #A series of plots showing how each athlete compares to the maximum and the average of distance thrown and difference between their last three and first three throws
 Max_d_line <- pool_stats[1,3]
