@@ -102,7 +102,7 @@ thal_plot
 
 Based on the plots, it appears that those with heart disease tend to be older, are more likley to be male and have a lower maximum heart rate.
 
-### 5. Using a logistic regression to see test if age, sex and max heart rate are significant predictors of heart disease
+### 5. Using a logistic regression to test if age, sex and max heart rate are significant predictors of heart disease
 
 ```{r, echo=FALSE}
 model <- glm(data = hd_data, hd ~  age + sex + thalach, family = "binomial")

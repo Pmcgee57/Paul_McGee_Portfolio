@@ -404,8 +404,8 @@ hd_data &lt;- hd_data %&gt;% mutate(sex = factor(sex, levels = 0:1, labels = c(&
 <p>Based on the plots, it appears that those with heart disease tend to be older, are more likley to be male and have a lower maximum heart rate.</p>
 </div>
 </div>
-<div id="using-a-logistic-regression-to-see-test-if-age-sex-and-max-heart-rate-are-significant-predictors-of-heart-disease" class="section level3">
-<h3>5. Using a logistic regression to see test if age, sex and max heart rate are significant predictors of heart disease</h3>
+<div id="using-a-logistic-regression-to-test-if-age-sex-and-max-heart-rate-are-significant-predictors-of-heart-disease" class="section level3">
+<h3>5. Using a logistic regression to test if age, sex and max heart rate are significant predictors of heart disease</h3>
 <pre><code>## 
 ## Call:
 ## glm(formula = hd ~ age + sex + thalach, family = &quot;binomial&quot;, 
