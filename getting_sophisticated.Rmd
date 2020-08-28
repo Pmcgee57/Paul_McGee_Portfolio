@@ -1,8 +1,244 @@
 ---
-title: "Project 3"
+title: "An Analysis of Glassdoor Data Analyst listings"
 output:
   html_document:
     toc: true
     toc_float: true
 ---
+&nbsp;  
+
+## An analysis and visualization of data analyst positions by location, industry, salary done using data cleaning, ggplot and dplyr.
+
+&nbsp;  
+
+This projects data was collected using webscraping from Glassdoor to complie data analyst positions listed across the united states.
+
+
+I am interested in finding out:
+
+* The distribution of salaries for data analyst positions
+* What different industries are hiring data analysts?
+* What these industries offer data analysts in salaries?
+* Where are most of these positions located for analyst positions, by their respective industry?
+
+&nbsp;  
+
+I'll be using visualizations of the data to help answer these questions, as well as the output of the data itself
+
+### 1. Loading in the data
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(readr)
+library(dplyr)
+library(plotly)
+```
+
+```{r, echo = FALSE, warning=FALSE}
+data <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/analyst_positions_data.xlsx")
+glimpse(data)
+```
+
+&nbsp;  
+
+Defintely will have some data cleaning to do with this. I'm going to:
+
+* remove extra text from salary column
+* remove the rating that shouldn't be in the company name column
+* remove rows where salary = ""
+* make salary and rating a numeric data type for analysis
+```{r, include=FALSE}
+data <- data %>% rename(Salary = `Salary Estimate` )
+data_2 <- data
+
+data_2$Salary <- gsub("[(Glassdoor est.)K$]", "", data$Salary)
+unique(data_2$Salary)
+data_3 <- data_2
+
+data_3$Salary <- sub("\\-.*",'', perl = T, data_3$Salary)
+unique(data_3$Salary)
+
+#Remove rating from company name
+data_3 <- data_3 %>% rename(Comp_name = `Company Name` )
+data_3$Comp_name <- sub("\\s+[^ ]+$", "", data_3$Comp_name)
+
+
+#remove rows where salary = ""
+data_3 <- subset(data_3, Salary!="")
+unique(data_3$Salary)
+
+#make salary and rating numeric
+data_3$Salary <- as.numeric(data_3$Salary)
+data_3$Rating <- as.numeric(data_3$Rating)
+```
+
+```{r, echo = FALSE}
+head(data_3)
+```
+I chose to keep the smallest value in the estimated salary range, so our data may look like salaries are on the low side.
+
+
+### 2. Visualizing distribution of salaries
+I'll create a histogram and print summary statistics to see what the salary range is
+
+```{r, echo = FALSE}
+summary(data_3$Salary)
+hist_sal<- data_3 %>% ggplot(aes(Salary)) + geom_histogram(binwidth = 2, color = "white", fill = "black")
+ggplotly(hist_sal)
+```
+
+&nbsp;  
+
+### 3. What industries are looking for Analysts?
+I'll see which industries have more analyst position postings right now.
+```{r, echo = FALSE}
+data_4 <- data_3
+indus_count <- data_4 %>% count(Industry) %>% arrange(desc(n))
+indus_count <- subset(indus_count, Industry!="-1") 
+head(indus_count,20)
+```
+
+&nbsp;  
+
+Now I'll shorten the text in the industry column to just keep the first word and create a plot to visualize the results of industries with 40 or more job postings.
+```{r, echo =FALSE}
+indus_count <- indus_count %>% filter(n >= 40)
+indus_count$Industry <- gsub(' [A-z ]*', '' ,indus_count$Industry)
+indus_n <- indus_count
+
+#shortening names
+indus_n$Industry <- gsub("&", "", indus_n$Industry)
+indus_n
+
+#Plots of most frequent industries looking for analysts
+
+#all black theme
+blackout <- theme(
+  # get rid of panel grids
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  # Change plot and panel background
+  plot.background=element_rect(fill = "gray"),
+  panel.background = element_rect(fill = 'black'),
+  # Change legend 
+  legend.direction = "horizontal",
+  legend.background = element_rect(fill = "black", color = NA),
+  legend.key = element_rect(color = "gray", fill = "black"),
+  legend.title = element_text(color = "white"),
+  legend.text = element_text(color = "white")
+)
+
+indus_plot <- indus_n %>% ggplot(aes(x = Industry, y = n, fill = Industry)) + geom_col() +
+    theme(axis.text.x = element_text(angle = 90), legend.position="none") + ylab("Number of Positions") + blackout
+```
+```{r, echo=FALSE,warning=FALSE}
+ggplotly(indus_plot)
+```
+
+&nbsp;  
+
+### 4. What do data anlysts get paid in different industries?
+
+Let's see how much data analysts get paid on average based on what industry they work in.
+
+I'll use the top 20 industries by amount of jobs postings on Glassdoor to determine this.
+```{r, echo=FALSE}
+Sal_Indus <- data_4 %>% select(Salary, Comp_name, Industry, Location)
+Sal_Indus <- subset(Sal_Indus, Industry!="-1")
+Sal_Indus$Industry <- gsub(' [A-z ]*', '' ,Sal_Indus$Industry)
+Sal_Indus$Industry <- gsub("&", "", Sal_Indus$Industry)
+Sal_Indus$Industry <- gsub(",", "", Sal_Indus$Industry)
+
+counts <- Sal_Indus %>% count(Industry) %>% arrange(desc(n))
+#counts
+top20 <- head(counts, 20)
+top20
+names <- top20 %>% select(Industry)
+#class(names)
+names <- as.vector(names)
+#class(names)
+avector <- names[['Industry']]
+```
+
+These are what industries pay data analysts the most on average
+```{r, echo = FALSE}
+Industry_avg_sal <- Sal_Indus %>%
+  group_by(Industry) %>%
+    summarise(avg_sal = mean(Salary)) %>% 
+      arrange(desc(avg_sal))
+Industry_avg_sal
+
+Industry_avg_sal_2 <- head(Industry_avg_sal,10)
+Industry_avg_sal_plot <- Industry_avg_sal_2 %>% ggplot(aes(x = Industry, y = avg_sal, fill = Industry)) +
+  geom_col() + 
+    labs(title = "Average Salary for all Industries", y = "Average Salary") +
+      theme(axis.text.x = element_text(angle = 90), legend.position="none",  axis.title.x = element_blank()) 
+ggplotly(Industry_avg_sal_plot)
+
+```
+
+Now. let's see how much the industries with the most amount of jobs posted pay data analysts.
+```{r, echo=FALSE}
+Highest_sal <- Industry_avg_sal[Industry_avg_sal$Industry %in% avector, ]
+Sal_plot <- Highest_sal %>% ggplot(aes(x = reorder(Industry, - avg_sal), y = avg_sal, fill = Industry)) +
+  geom_col() + theme(axis.text.x = element_text(angle = 90),legend.position="none",  axis.title.x = element_blank())  + 
+  labs(title = "Average Salary for Data Analysts by Industry with most Postings", x = "Average Salary")
+
+ggplotly(Sal_plot)
+```
+
+&nbsp;  
+
+### 5. What location has the most jobs for each industry
+
+Now I'll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New YOrk would have the most positions and the most industries that are currently hiring.
+
+```{r, echo = FALSE}
+
+#Where are most jobs located by industry
+data_5 <- data_4
+data_5 <- data_5 %>% select(Salary, Comp_name, Industry, Location)
+#shorten industry names
+data_5$Industry <- gsub(' [A-z ]*', '' , data_5$Industry)
+data_5$Industry <- gsub("&", "", data_5$Industry)
+data_5$Industry <- gsub(",", "", data_5$Industry)
+#droppping "-1" in Industry
+data_5 <- data_5[!grepl("-1", data_5$Industry), ]
+#Drop state after comma
+data_5$Location <- gsub(",.*","",data_5$Location)
+
+loc_count <- data_5 %>% group_by(Industry) %>% count(Location) %>% arrange(desc(n))
+loc_count
+loc_count <- loc_count[1:20,]
+```
+
+&nbsp;  
+
+New York appears to have the most postings. To make this list easier to comprehend, I'll plot number of positions per industry and facet wrap by city.
+```{r,echo=FALSE}
+loc_count_plot <- loc_count %>% ggplot(aes(x = Industry, y = n, fill = Industry)) + geom_col() + 
+  theme(axis.text.x = element_text(angle = 90)) + 
+    facet_wrap(~ Location) + theme(axis.title.x = element_blank(),axis.title.y = element_blank()) +
+      ggtitle("Number of Analyst Jobs per Industry by Location") +
+        theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(loc_count_plot)
+```
+
+&nbsp;  
+
+### 6. Conclusion
+
+New York is the city with the most jobs in the most industries that are hiring right now.
+
+Biotech is the industry which pays the most on average out of the top 20 industries with the most postings, while News pays the most overall on average.
+
+The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.
+
+A pessimistic estimate of the range of salaries for data analysts are between $29,000 -$112,000.
+
+&nbsp;  
+
 
