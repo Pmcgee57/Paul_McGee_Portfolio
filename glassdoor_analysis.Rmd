@@ -5,6 +5,7 @@ output:
     toc: true
     toc_float: true
 ---
+
 &nbsp;  
 
 ## An analysis and visualization of data analyst positions by location, industry, salary done using data cleaning, ggplot and dplyr.
@@ -34,6 +35,7 @@ library(readxl)
 library(readr)
 library(dplyr)
 library(plotly)
+library(ggplot2)
 ```
 
 ```{r, echo = FALSE, warning=FALSE}
