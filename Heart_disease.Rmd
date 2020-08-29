@@ -2,7 +2,10 @@
 title: "Cleveland Heart Disease Project"
 author: "Paul McGee"
 date: "8/21/2020"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}

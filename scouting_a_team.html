@@ -21,6 +21,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -249,6 +252,63 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -256,6 +316,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -279,7 +349,7 @@ $(document).ready(function () {
   <a href="Heart_disease.html">Cleveland Heart Disease Project</a>
 </li>
 <li>
-  <a href="getting_sophisticated.html">Project 3</a>
+  <a href="getting_sophisticated.html">Job Posts Analysis</a>
 </li>
 <li>
   <a href="your_turn.html">Project 4</a>
@@ -307,8 +377,8 @@ $(document).ready(function () {
 <h2>Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.</h2>
 <p>This is a project that I did using track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the womens javelin.</p>
 <p> </p>
-<div id="first-im-going-to-read-in-the-data." class="section level4">
-<h4>First I’m going to read in the data.</h4>
+<div id="reading-in-the-data." class="section level3">
+<h3>1. Reading in the data.</h3>
 <pre class="r"><code>head(data)</code></pre>
 <pre><code>## # A tibble: 6 x 10
 ##   Event Male_Female EventID Athlete Flight1 Flight2 Flight3 Flight4 Flight5
@@ -320,7 +390,6 @@ $(document).ready(function () {
 ## 5 Shot~ Male              1 Jacob ~    18.4    18.9     0      19.1     0  
 ## 6 Shot~ Male              1 Rob Go~    18.5    18.3    18.6    18.4    19.2
 ## # ... with 1 more variable: Flight6 &lt;dbl&gt;</code></pre>
-</div>
 <div id="this-is-what-first-5-rows-of-the-uncleaned-data-looks-like." class="section level4">
 <h4>This is what first 5 rows of the uncleaned data looks like.</h4>
 <p> <br />
@@ -338,8 +407,10 @@ I’m going to clean it up a bit. The changes I’ll make include:</p>
 ## 2       8 Ariana Ince          1     49.0</code></pre>
 <p> </p>
 </div>
-<div id="the-next-step-is-to-create-the-total-results-for-each-event-for-each-athlete-as-well-as-create-some-summary-statistics-to-better-describe-their-performance." class="section level4">
-<h4>The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.</h4>
+</div>
+<div id="creating-sumary-statistics-and-creating-new-columns" class="section level3">
+<h3>2. Creating sumary statistics and creating new columns</h3>
+<p>The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.</p>
 <p>These stats include total distance thrown, standard deviation of their throws and the number of successful throws they had.</p>
 <pre class="r"><code>javelin_totals &lt;- javelin_long %&gt;%
   filter(Distance &gt; 0) %&gt;%
@@ -348,7 +419,6 @@ I’m going to clean it up a bit. The changes I’ll make include:</p>
           StandardDev = round(sd(Distance),3),
               Success = n())</code></pre>
 <p> </p>
-</div>
 <div id="now-ill-find-the-difference-between-the-persons-last-3-and-first-3-throws-and-then-use-a-left-join-to-combine-this-data-with-the-javelin_total-data-frame." class="section level4">
 <h4>Now I’ll find the difference between the persons last 3 and first 3 throws and then use a left join to combine this data with the javelin_total data frame.</h4>
 <pre class="r"><code># Create first_3, last_3, and diff between the two
@@ -360,9 +430,10 @@ javelin_totals &lt;- left_join(javelin_totals, javelin, by = c(&quot;EventID&quo
 head(javelin_totals, 5)</code></pre>
 <p> </p>
 </div>
-<div id="lets-normalize-the-summary-statistics-so-they-can-be-properly-compared." class="section level4">
-<h4>Let’s normalize the summary statistics so they can be properly compared.</h4>
-<p>The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values so that they can be used for comparison.</p>
+</div>
+<div id="normalizing-the-data-for-easier-comparison" class="section level3">
+<h3>3. Normalizing the data for easier comparison</h3>
+<p>I’ll normalize the summary statistics so they can be properly compared. The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values so that they can be used for comparison.</p>
 <pre class="r"><code>#function to normalize summary stats
 
 norm &lt;- function(result) {
@@ -378,8 +449,9 @@ javelin_norm &lt;- javelin_totals %&gt;%
         summarize_all(funs(mean))</code></pre>
 <p> </p>
 </div>
-<div id="to-determine-who-the-best-athletes-are-lets-assign-weights-to-the-athletes-for-their-distance-standard-deviation-of-distance-if-they-were-successful-in-their-throw-and-the-difference-in-their-throws.-weights-sum-to-10.-more-weight-placed-in-a-statistic-means-it-is-more-important." class="section level4">
-<h4>To determine who the best athletes are, let’s assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important.</h4>
+<div id="assigning-weights-to-athletes-statistics" class="section level3">
+<h3>4. Assigning weights to Athletes statistics</h3>
+<p>To determine who the best athletes are, let’s assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important.</p>
 <pre class="r"><code>weights &lt;- c(3.5, 2, 3, 1.5)
 
 #creating total score by multiplying columns by their weights
@@ -389,8 +461,9 @@ mutate(TotalScore = TotalDistance * weights[1] + StandardDev * weights[2] +
 arrange(desc(TotalScore))</code></pre>
 <p> </p>
 </div>
-<div id="were-going-to-take-the-top-five-athletes-for-our-team-from-the-dataframe-we-created-by-assigning-the-weights.-once-we-have-our-team-lets-have-a-look-at-their-stats." class="section level4">
-<h4>We’re going to take the top five athletes for our team from the dataframe we created by assigning the weights. Once we have our team, let’s have a look at their stats.</h4>
+<div id="picking-our-team" class="section level3">
+<h3>5. Picking our team</h3>
+<p>I’m going to take the top five athletes for our team from the dataframe we created by assigning the weights. Once we have our team, let’s have a look at their stats.</p>
 <pre class="r"><code>#selecting first five rows to pick athletes for our team
 javelin_team&lt;- javelin_team[1:5,]
 javelin_team
@@ -423,14 +496,15 @@ team_stats &lt;- javelin_totals %&gt;%
 ## 8 Average          diff  -7.720056</code></pre>
 <p> </p>
 </div>
-<div id="ill-see-how-my-teams-stats-compares-to-the-maximum-and-average-of-distance-thrown-as-well-as-the-maximum-and-average-of-the-difference-in-an-athletes-last-three-and-first-three-throws." class="section level4">
-<h4>I’ll see how my teams stats compares to the maximum and average of distance thrown as well as the maximum and average of the difference in an athletes last three and first three throws.</h4>
-<p>In a business setting, I could use these plots of their stats to justify why I would want these athletes on my team. We can see all our athletes throw well above the average, with two of our athletes throwing longer on their last three then first three throws. We could say these are our “clutch” players.</p>
+<div id="how-does-my-team-stack-up-against-the-rest-of-the-field" class="section level3">
+<h3>6. How does my team stack up against the rest of the field?</h3>
+<p>I’ll see how my teams stats compares to the maximum and average of distance thrown as well as the maximum and average of the difference in an athletes last three and first three throws. In a business setting, I could use these plots of their stats to justify why I would want these athletes on my team. We can see all our athletes throw well above the average, with two of our athletes throwing longer on their last three then first three throws. We could say these are our “clutch” players.</p>
 <p>The maximum stat is represented by the solid line and the average by the dashed.</p>
 <p><img src="scouting_a_team_files/figure-html/unnamed-chunk-13-1.png" width="672" /><img src="scouting_a_team_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 </div>
-<div id="now-lets-select-random-athletes-from-athletes-not-on-our-team-to-play-against-us.-were-going-to-create-a-fake-meet-to-see-if-our-teams-total-would-be-higher-than-the-others." class="section level4">
-<h4>Now, let’s select random athletes from athletes not on our team to play against us. We’re going to create a fake meet to see if our teams total would be higher than the others.</h4>
+<div id="simulating-a-meet-between-my-team-and-another" class="section level3">
+<h3>7. Simulating a meet between my team and another</h3>
+<p>Now, let’s select random athletes from athletes not on our team to play against us. We’re going to create a fake meet to see if our teams total would be higher than the others.</p>
 <pre class="r"><code>set.seed(77)
 home &lt;- c(2,3,5)
 away &lt;- sample(1:nrow(javelin_totals), 3, replace=FALSE)
@@ -443,15 +517,17 @@ print(paste0(&quot;Javelin match, Final Score: &quot;, HomeTeam, &quot; - &quot;
 <pre class="r"><code>ifelse(HomeTeam &gt; AwayTeam, print(&quot;Your team won the match!&quot;), print(&quot;Sorry, you lost.&quot;))</code></pre>
 <pre><code>## [1] &quot;Your team won the match!&quot;</code></pre>
 <pre><code>## [1] &quot;Your team won the match!&quot;</code></pre>
-</div>
 <div id="our-team-won-the-match" class="section level4">
 <h4>Our team won the match!</h4>
 <p><br></p>
 </div>
 </div>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -484,6 +560,32 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
