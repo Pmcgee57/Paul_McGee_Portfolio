@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>An Analysis of Glassdoor Data Analyst listings</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 45px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h2 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h3 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h4 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h5 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h6 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="scouting_a_team.html">Scouting an Athletics Team</a>
+</li>
+<li>
+  <a href="Heart_disease.html">Cleveland Heart Disease Project</a>
+</li>
+<li>
+  <a href="glassdoor_analysis.html">Job Posts Analysis</a>
+</li>
+<li>
+  <a href="your_turn.html">Project 4</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">An Analysis of Glassdoor Data Analyst listings</h1>
+
+</div>
+
+
+<p> </p>
+<div id="an-analysis-and-visualization-of-data-analyst-positions-by-location-industry-salary-done-using-data-cleaning-ggplot-and-dplyr." class="section level2">
+<h2>An analysis and visualization of data analyst positions by location, industry, salary done using data cleaning, ggplot and dplyr.</h2>
+<p> </p>
+<p>This projects data was collected using webscraping from Glassdoor to complie data analyst positions listed across the united states.</p>
+<p>I am interested in finding out:</p>
+<ul>
+<li>The distribution of salaries for data analyst positions</li>
+<li>What different industries are hiring data analysts?</li>
+<li>What these industries offer data analysts in salaries?</li>
+<li>Where are most of these positions located for analyst positions, by their respective industry?</li>
+</ul>
+<p> </p>
+<p>I’ll be using visualizations of the data to help answer these questions, as well as the output of the data itself</p>
+<div id="loading-in-the-data" class="section level3">
+<h3>1. Loading in the data</h3>
+<pre><code>## New names:
+## * `` -&gt; ...1</code></pre>
+<pre><code>## Observations: 2,253
+## Variables: 16
+## $ ...1                &lt;dbl&gt; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ...
+## $ `Job Title`         &lt;chr&gt; &quot;Data Analyst, Center on Immigration and J...
+## $ `Salary Estimate`   &lt;chr&gt; &quot;$37K-$66K (Glassdoor est.)&quot;, &quot;$37K-$66K (...
+## $ `Job Description`   &lt;chr&gt; &quot;Are you eager to roll up your sleeves and...
+## $ Rating              &lt;dbl&gt; 3.2, 3.8, 3.4, 4.1, 3.9, 3.9, 4.4, 3.7, 4....
+## $ `Company Name`      &lt;chr&gt; &quot;Vera Institute of Justice\r\n3.2&quot;, &quot;Visit...
+## $ Location            &lt;chr&gt; &quot;New York, NY&quot;, &quot;New York, NY&quot;, &quot;New York,...
+## $ Headquarters        &lt;chr&gt; &quot;New York, NY&quot;, &quot;New York, NY&quot;, &quot;New York,...
+## $ Size                &lt;chr&gt; &quot;201 to 500 employees&quot;, &quot;10000+ employees&quot;...
+## $ Founded             &lt;dbl&gt; 1961, 1893, 2003, 2002, 2009, 2014, 2001, ...
+## $ `Type of ownership` &lt;chr&gt; &quot;Nonprofit Organization&quot;, &quot;Nonprofit Organ...
+## $ Industry            &lt;chr&gt; &quot;Social Assistance&quot;, &quot;Health Care Services...
+## $ Sector              &lt;chr&gt; &quot;Non-Profit&quot;, &quot;Health Care&quot;, &quot;Information ...
+## $ Revenue             &lt;chr&gt; &quot;$100 to $500 million (USD)&quot;, &quot;$2 to $5 bi...
+## $ Competitors         &lt;chr&gt; &quot;-1&quot;, &quot;-1&quot;, &quot;GoDaddy&quot;, &quot;-1&quot;, &quot;DraftKings&quot;,...
+## $ `Easy Apply`        &lt;dbl&gt; 1, -1, -1, -1, 1, -1, -1, 1, -1, -1, -1, -...</code></pre>
+<p> </p>
+<p>Defintely will have some data cleaning to do with this. I’m going to:</p>
+<ul>
+<li>remove extra text from salary column</li>
+<li>remove the rating that shouldn’t be in the company name column</li>
+<li>remove rows where salary = ""</li>
+<li>make salary and rating a numeric data type for analysis</li>
+</ul>
+<pre><code>## # A tibble: 6 x 16
+##    ...1 `Job Title` Salary `Job Descriptio~ Rating Comp_name Location
+##   &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   
+## 1     0 Data Analy~     37 &quot;Are you eager ~    3.2 Vera Ins~ New Yor~
+## 2     1 Quality Da~     37 &quot;Overview\r\n\r~    3.8 Visiting~ New Yor~
+## 3     2 Senior Dat~     37 &quot;Weâ€™re lookin~    3.4 Squaresp~ New Yor~
+## 4     3 Data Analy~     37 &quot;Requisition Nu~    4.1 Celerity  New Yor~
+## 5     4 Reporting ~     37 &quot;ABOUT FANDUEL ~    3.9 FanDuel   New Yor~
+## 6     5 Data Analy~     37 &quot;About Cubist\r~    3.9 Point72   New Yor~
+## # ... with 9 more variables: Headquarters &lt;chr&gt;, Size &lt;chr&gt;,
+## #   Founded &lt;dbl&gt;, `Type of ownership` &lt;chr&gt;, Industry &lt;chr&gt;,
+## #   Sector &lt;chr&gt;, Revenue &lt;chr&gt;, Competitors &lt;chr&gt;, `Easy Apply` &lt;dbl&gt;</code></pre>
+<p>I chose to keep the smallest value in the estimated salary range, so our data may look like salaries are on the low side.</p>
+</div>
+<div id="visualizing-distribution-of-salaries" class="section level3">
+<h3>2. Visualizing distribution of salaries</h3>
+<p>I’ll create a histogram and print summary statistics to see what the salary range is</p>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   24.00   41.00   50.00   54.27   64.00  113.00</code></pre>
+<p><img src="glassdoor_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p> </p>
+</div>
+<div id="what-industries-are-looking-for-analysts" class="section level3">
+<h3>3. What industries are looking for Analysts?</h3>
+<p>I’ll see which industries have more analyst position postings right now.</p>
+<pre><code>## # A tibble: 20 x 2
+##    Industry                                    n
+##    &lt;chr&gt;                                   &lt;int&gt;
+##  1 IT Services                               325
+##  2 Staffing &amp; Outsourcing                    322
+##  3 Health Care Services &amp; Hospitals          151
+##  4 Computer Hardware &amp; Software              111
+##  5 Consulting                                111
+##  6 Investment Banking &amp; Asset Management      78
+##  7 Enterprise Software &amp; Network Solutions    69
+##  8 Internet                                   65
+##  9 Advertising &amp; Marketing                    51
+## 10 Banks &amp; Credit Unions                      51
+## 11 Insurance Carriers                         47
+## 12 Colleges &amp; Universities                    40
+## 13 Accounting                                 39
+## 14 Biotech &amp; Pharmaceuticals                  33
+## 15 Social Assistance                          23
+## 16 Aerospace &amp; Defense                        22
+## 17 Video Games                                20
+## 18 Lending                                    15
+## 19 State &amp; Regional Agencies                  15
+## 20 Architectural &amp; Engineering Services       13</code></pre>
+<p> </p>
+<p>Now I’ll shorten the text in the industry column to just keep the first word and create a plot to visualize the results of industries with 40 or more job postings.</p>
+<pre><code>## # A tibble: 12 x 2
+##    Industry        n
+##    &lt;chr&gt;       &lt;int&gt;
+##  1 IT            325
+##  2 Staffing      322
+##  3 Health        151
+##  4 Computer      111
+##  5 Consulting    111
+##  6 Investment     78
+##  7 Enterprise     69
+##  8 Internet       65
+##  9 Advertising    51
+## 10 Banks          51
+## 11 Insurance      47
+## 12 Colleges       40</code></pre>
+<p><img src="glassdoor_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p> </p>
+</div>
+<div id="what-do-data-anlysts-get-paid-in-different-industries" class="section level3">
+<h3>4. What do data anlysts get paid in different industries?</h3>
+<p>Let’s see how much data analysts get paid on average based on what industry they work in.</p>
+<p>I’ll use the top 20 industries by amount of jobs postings on Glassdoor to determine this.</p>
+<pre><code>## # A tibble: 20 x 2
+##    Industry          n
+##    &lt;chr&gt;         &lt;int&gt;
+##  1 IT              325
+##  2 Staffing        322
+##  3 Health          172
+##  4 Computer        111
+##  5 Consulting      111
+##  6 Investment       78
+##  7 Enterprise       69
+##  8 Internet         65
+##  9 Advertising      51
+## 10 Banks            51
+## 11 Insurance        51
+## 12 Colleges         40
+## 13 Accounting       39
+## 14 Biotech          33
+## 15 Social           23
+## 16 Aerospace        22
+## 17 Video            20
+## 18 Lending          15
+## 19 State            15
+## 20 Architectural    13</code></pre>
+<p>These are what industries pay data analysts the most on average</p>
+<pre><code>## # A tibble: 78 x 2
+##    Industry      avg_sal
+##    &lt;chr&gt;           &lt;dbl&gt;
+##  1 News             84  
+##  2 Drug             82.5
+##  3 Education        69.7
+##  4 Sports           69  
+##  5 Utilities        67  
+##  6 Miscellaneous    66.5
+##  7 Chemical         65  
+##  8 Gambling         64  
+##  9 Venture          62.8
+## 10 Biotech          61.4
+## # ... with 68 more rows</code></pre>
+<p><img src="glassdoor_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Now. let’s see how much the industries with the most amount of jobs posted pay data analysts. <img src="glassdoor_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p> </p>
+</div>
+<div id="what-location-has-the-most-jobs-for-each-industry" class="section level3">
+<h3>5. What location has the most jobs for each industry</h3>
+<p>Now I’ll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New YOrk would have the most positions and the most industries that are currently hiring.</p>
+<pre><code>## # A tibble: 794 x 3
+## # Groups:   Industry [77]
+##    Industry   Location          n
+##    &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt;
+##  1 IT         New York         46
+##  2 Health     New York         36
+##  3 Staffing   New York         27
+##  4 Investment New York         23
+##  5 Staffing   Charlotte        22
+##  6 IT         Charlotte        18
+##  7 IT         San Francisco    18
+##  8 IT         San Jose         18
+##  9 Consulting New York         17
+## 10 Staffing   Chicago          17
+## # ... with 784 more rows</code></pre>
+<p> </p>
+<p>New York appears to have the most postings. To make this list easier to comprehend, I’ll plot number of positions per industry and facet wrap by city. <img src="glassdoor_analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p> </p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>6. Conclusion</h3>
+<p>New York is the city with the most jobs in the most industries that are hiring right now.</p>
+<p>Biotech is the industry which pays the most on average out of the top 20 industries with the most postings, while News pays the most overall on average.</p>
+<p>The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.</p>
+<p>A pessimistic estimate of the range of salaries for data analysts are between $29,000 -$112,000.</p>
+<p> </p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

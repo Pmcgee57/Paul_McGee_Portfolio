@@ -7,7 +7,7 @@ navbar:
     - text: "Cleveland Heart Disease Project"
       href: Heart_disease.html
     - text: "Job Posts Analysis"
-      href: getting_sophisticated.html
+      href: glassdoor_analysis.html
     - text: "Project 4"
       href: your_turn.html
 output_dir: "."
