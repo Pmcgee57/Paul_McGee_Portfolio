@@ -87,8 +87,7 @@ I'll create a histogram and print summary statistics to see what the salary rang
 summary(data_3$Salary)
 hist_sal<- data_3 %>% ggplot(aes(Salary)) + geom_histogram(binwidth = 2, color = "white", fill = "black") +
   labs(title = "Data Analyst Positions Salaries")
-plot_1<- ggplotly(hist_sal)
-plot_1
+hist_sal
 ```
 
 &nbsp;  
@@ -136,8 +135,7 @@ indus_plot <- indus_n %>% ggplot(aes(x = Industry, y = n, fill = Industry)) + ge
     theme(axis.text.x = element_text(angle = 90), legend.position="none") + ylab("Number of Positions") + blackout
 ```
 ```{r, echo=FALSE,warning=FALSE}
-plot_2<- ggplotly(indus_plot)
-plot_2
+indus_plot
 ```
 
 &nbsp;  
@@ -178,8 +176,7 @@ Industry_avg_sal_plot <- Industry_avg_sal_2 %>% ggplot(aes(x = Industry, y = avg
   geom_col() + 
     labs(title = "Average Salary for all Industries", y = "Average Salary") +
       theme(axis.text.x = element_text(angle = 90), legend.position="none",  axis.title.x = element_blank()) 
-plot_3<- ggplotly(Industry_avg_sal_plot)
-plot_3
+Industry_avg_sal_plot
 
 ```
 
@@ -190,8 +187,7 @@ Sal_plot <- Highest_sal %>% ggplot(aes(x = reorder(Industry, - avg_sal), y = avg
   geom_col() + theme(axis.text.x = element_text(angle = 90),legend.position="none",  axis.title.x = element_blank())  + 
   labs(title = "Average Salary for Data Analysts by Industry with most Postings", x = "Average Salary")
 
-plot_4 <-ggplotly(Sal_plot)
-plot_4
+Sal_plot
 ```
 
 &nbsp;  
@@ -229,8 +225,7 @@ loc_count_plot <- loc_count %>% ggplot(aes(x = Industry, y = n, fill = Industry)
       ggtitle("Number of Analyst Jobs per Industry by Location") +
         theme(plot.title = element_text(hjust = 0.5))
 
-plot_5<- ggplotly(loc_count_plot)
-plot_5
+loc_count_plot
 ```
 
 &nbsp;  
