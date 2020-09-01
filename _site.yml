@@ -6,7 +6,7 @@ navbar:
       href: scouting_a_team.html
     - text: "Cleveland Heart Disease Project"
       href: Heart_disease.html
-    - text: "Job Posts Analysis"
+    - text: "Glassdoor Analysis"
       href: glassdoor_analysis.html
     - text: "Medical Expense Regression"
       href: ins_regression.html
