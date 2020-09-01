@@ -17,7 +17,7 @@ library(Metrics)
 
 ## Using exploratory data analysis, tidyverse, ggplot, and multiple logistic regression to determine risk factors for heart disease.
 
-This project uses the cleveland heart disease dataset to discover what factors may increase a persons liklihood of developing heart disease. The factors I am going to focus on are 
+This project uses the cleveland heart disease dataset to discover what factors may increase a persons likelihood of developing heart disease. The factors I am going to focus on include: 
 
 1. age 
 2. sex 
@@ -96,17 +96,19 @@ hd_data%>%mutate(hd_labelled = ifelse(hd == 0, "No Disease", "Disease")) -> hd_d
 
 #### Now I'll create some plots to further illustrate the potential affects of these variables on heart-disease.
 ```{r, echo = FALSE}
-age_plot <- ggplot(data = hd_data, aes(x = hd_labelled,y = age)) + geom_boxplot() + ggtitle("Age and Heart Disease")
+age_plot <- ggplot(data = hd_data, aes(x = hd_labelled,y = age, fill = hd_labelled)) + geom_boxplot() + ggtitle("Age and Heart Disease") + xlab("Risk or no Risk of Heart Disease")
 age_plot
 
 # sex vs hd
 sex_plot <- ggplot(data = hd_data, aes(x = hd_labelled, fill = sex)) + 
-geom_bar(position = "fill") + ylab("Sex %") + ggtitle("Sex and Heart Disease")
+geom_bar(position = "fill") + ylab("% of Sex") + ggtitle("Sex and Heart Disease") +
+   xlab("Risk or no Risk of Heart Disease")
 sex_plot
 #% of those with heart disease are more male than female
 
 # max heart rate vs hd
-thal_plot <- ggplot(data = hd_data,aes(x = hd_labelled, y = thalach)) + geom_boxplot() + ggtitle("Max Heart Rate and Heart Disease")
+thal_plot <- ggplot(data = hd_data,aes(x = hd_labelled, y = thalach, fill = hd_labelled)) + geom_boxplot() + ggtitle("Max Heart Rate and Heart Disease") + 
+   xlab("Risk or no Risk of Heart Disease") + ylab("Max Heart Rate")
 thal_plot
 ```
 

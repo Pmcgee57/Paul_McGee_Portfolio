@@ -26,7 +26,7 @@ I am interested in finding out:
 
 I'll be using visualizations of the data to help answer these questions, as well as the output of the data itself
 
-### **1. Loading in the data**
+### **1. Loading in and cleaning the data**
 
 ```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -81,6 +81,7 @@ head(data_3)
 ```
 I chose to keep the smallest value in the estimated salary range, so our data may look like salaries are on the low side.
 
+&nbsp;  
 
 ### **2. Visualizing distribution of salaries**
 I'll create a histogram and print summary statistics to see what the salary range is

@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.
 
-This is a project that I did using  track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the womens javelin.
+This is a project that I did using  track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the women's javelin.
 
 &nbsp;  
 

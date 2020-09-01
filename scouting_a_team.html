@@ -349,10 +349,10 @@ div.tocify {
   <a href="Heart_disease.html">Cleveland Heart Disease Project</a>
 </li>
 <li>
-  <a href="getting_sophisticated.html">Job Posts Analysis</a>
+  <a href="glassdoor_analysis.html">Job Posts Analysis</a>
 </li>
 <li>
-  <a href="your_turn.html">Project 4</a>
+  <a href="ins_regression.html">Medical Expense Regression</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -375,10 +375,10 @@ div.tocify {
 
 <div id="using-the-dplyr-package-data-cleaning-functions-and-more-to-draft-and-compete-a-team-in-a-javelin-event." class="section level2">
 <h2>Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.</h2>
-<p>This is a project that I did using track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the womens javelin.</p>
+<p>This is a project that I did using track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the women’s javelin.</p>
 <p> </p>
 <div id="reading-in-the-data." class="section level3">
-<h3>1. Reading in the data.</h3>
+<h3><strong>1. Reading in the data.</strong></h3>
 <pre class="r"><code>head(data)</code></pre>
 <pre><code>## # A tibble: 6 x 10
 ##   Event Male_Female EventID Athlete Flight1 Flight2 Flight3 Flight4 Flight5
@@ -409,7 +409,7 @@ I’m going to clean it up a bit. The changes I’ll make include:</p>
 </div>
 </div>
 <div id="creating-sumary-statistics-and-creating-new-columns" class="section level3">
-<h3>2. Creating sumary statistics and creating new columns</h3>
+<h3><strong>2. Creating sumary statistics and creating new columns</strong></h3>
 <p>The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.</p>
 <p>These stats include total distance thrown, standard deviation of their throws and the number of successful throws they had.</p>
 <pre class="r"><code>javelin_totals &lt;- javelin_long %&gt;%
@@ -418,6 +418,7 @@ I’m going to clean it up a bit. The changes I’ll make include:</p>
       summarize(TotalDistance = sum(Distance), 
           StandardDev = round(sd(Distance),3),
               Success = n())</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;Athlete&#39; (override with `.groups` argument)</code></pre>
 <p> </p>
 <div id="now-ill-find-the-difference-between-the-persons-last-3-and-first-3-throws-and-then-use-a-left-join-to-combine-this-data-with-the-javelin_total-data-frame." class="section level4">
 <h4>Now I’ll find the difference between the persons last 3 and first 3 throws and then use a left join to combine this data with the javelin_total data frame.</h4>
@@ -432,7 +433,7 @@ head(javelin_totals, 5)</code></pre>
 </div>
 </div>
 <div id="normalizing-the-data-for-easier-comparison" class="section level3">
-<h3>3. Normalizing the data for easier comparison</h3>
+<h3><strong>3. Normalizing the data for easier comparison</strong></h3>
 <p>I’ll normalize the summary statistics so they can be properly compared. The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values so that they can be used for comparison.</p>
 <pre class="r"><code>#function to normalize summary stats
 
@@ -450,7 +451,7 @@ javelin_norm &lt;- javelin_totals %&gt;%
 <p> </p>
 </div>
 <div id="assigning-weights-to-athletes-statistics" class="section level3">
-<h3>4. Assigning weights to Athletes statistics</h3>
+<h3><strong>4. Assigning weights to Athletes statistics</strong></h3>
 <p>To determine who the best athletes are, let’s assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important.</p>
 <pre class="r"><code>weights &lt;- c(3.5, 2, 3, 1.5)
 
@@ -462,7 +463,7 @@ arrange(desc(TotalScore))</code></pre>
 <p> </p>
 </div>
 <div id="picking-our-team" class="section level3">
-<h3>5. Picking our team</h3>
+<h3><strong>5. Picking our team</strong></h3>
 <p>I’m going to take the top five athletes for our team from the dataframe we created by assigning the weights. Once we have our team, let’s have a look at their stats.</p>
 <pre class="r"><code>#selecting first five rows to pick athletes for our team
 javelin_team&lt;- javelin_team[1:5,]
@@ -497,13 +498,13 @@ team_stats &lt;- javelin_totals %&gt;%
 <p> </p>
 </div>
 <div id="how-does-my-team-stack-up-against-the-rest-of-the-field" class="section level3">
-<h3>6. How does my team stack up against the rest of the field?</h3>
+<h3><strong>6. How does my team stack up against the rest of the field?</strong></h3>
 <p>I’ll see how my teams stats compares to the maximum and average of distance thrown as well as the maximum and average of the difference in an athletes last three and first three throws. In a business setting, I could use these plots of their stats to justify why I would want these athletes on my team. We can see all our athletes throw well above the average, with two of our athletes throwing longer on their last three then first three throws. We could say these are our “clutch” players.</p>
 <p>The maximum stat is represented by the solid line and the average by the dashed.</p>
 <p><img src="scouting_a_team_files/figure-html/unnamed-chunk-13-1.png" width="672" /><img src="scouting_a_team_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 </div>
 <div id="simulating-a-meet-between-my-team-and-another" class="section level3">
-<h3>7. Simulating a meet between my team and another</h3>
+<h3><strong>7. Simulating a meet between my team and another</strong></h3>
 <p>Now, let’s select random athletes from athletes not on our team to play against us. We’re going to create a fake meet to see if our teams total would be higher than the others.</p>
 <pre class="r"><code>set.seed(77)
 home &lt;- c(2,3,5)
