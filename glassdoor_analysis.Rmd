@@ -1,5 +1,5 @@
 ---
-title: "An Analysis of Glassdoor Data Analyst listings"
+title: "An Analysis of Glassdoor Data Analyst Listings"
 output:
   html_document:
     toc: true
@@ -8,11 +8,11 @@ output:
 
 &nbsp;  
 
-## An analysis and visualization of data analyst positions by location, industry, salary done using data cleaning, ggplot and dplyr.
+## Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary
 
 &nbsp;  
 
-This projects data was collected using webscraping from Glassdoor to complie data analyst positions listed across the united states.
+This projects data was collected using webscraping from Glassdoor to compile data analyst positions listed across the united states.
 
 
 I am interested in finding out:
@@ -26,7 +26,7 @@ I am interested in finding out:
 
 I'll be using visualizations of the data to help answer these questions, as well as the output of the data itself
 
-### 1. Loading in the data
+### **1. Loading in the data**
 
 ```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -82,7 +82,7 @@ head(data_3)
 I chose to keep the smallest value in the estimated salary range, so our data may look like salaries are on the low side.
 
 
-### 2. Visualizing distribution of salaries
+### **2. Visualizing distribution of salaries**
 I'll create a histogram and print summary statistics to see what the salary range is
 
 ```{r, echo = FALSE}
@@ -94,7 +94,7 @@ hist_sal
 
 &nbsp;  
 
-### 3. What industries are looking for Analysts?
+### **3. What industries are looking for Analysts?**
 I'll see which industries have more analyst position postings right now.
 ```{r, echo = FALSE}
 data_4 <- data_3
@@ -142,7 +142,7 @@ indus_plot
 
 &nbsp;  
 
-### 4. What do data anlysts get paid in different industries?
+### **4. What do data anlysts get paid in different industries?**
 
 Let's see how much data analysts get paid on average based on what industry they work in.
 
@@ -194,7 +194,7 @@ Sal_plot
 
 &nbsp;  
 
-### 5. What location has the most jobs for each industry
+### **5. What location has the most jobs for each industry**
 
 Now I'll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New YOrk would have the most positions and the most industries that are currently hiring.
 
@@ -232,7 +232,7 @@ loc_count_plot
 
 &nbsp;  
 
-### 6. Conclusion
+### **6. Conclusion**
 
 New York is the city with the most jobs in the most industries that are hiring right now.
 

@@ -351,7 +351,7 @@ div.tocify {
   <a href="glassdoor_analysis.html">Job Posts Analysis</a>
 </li>
 <li>
-  <a href="your_turn.html">Project 4</a>
+  <a href="ins_regression.html">Medical Expense Regression</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -373,7 +373,7 @@ div.tocify {
 <p> </p>
 <div id="using-linear-regression-exploratory-data-analysis-and-data-visualization-to-predict-the-amount-which-individuals-have-spent-on-health-care." class="section level4">
 <h4>Using linear regression, exploratory data analysis and data visualization to predict the amount which individuals have spent on health care.</h4>
-<p>This projects uses the medical cost personal dataset to see what variables are most likely associated with increasing medical costs for an individual, and how much those costs are.</p>
+<p>This projects uses the medical cost personal dataset to see what variables are most likely associated with the amount an individual has spent in medical costs and how much those costs are.</p>
 </div>
 <div id="reading-in-the-data" class="section level3">
 <h3><strong>1. Reading in the data</strong></h3>
@@ -424,21 +424,21 @@ div.tocify {
 ## children 0.0424690 0.0127589 1.00000000 0.06799823
 ## charges  0.2990082 0.1983410 0.06799823 1.00000000</code></pre>
 <p>Age is most closely correlated with spending on ones health.</p>
-<p>I’ll view these correlations visually. <img src="your_turn_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>I’ll view these correlations visually. <img src="ins_regression_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Once again these plots show that age is most closely correlated with charges among the numeric variables. None of the numeric variables are highly correlated between one another, so this eliminates the problem of multicollinearity. A final observation from these plots is to note that age and charges may not have a linear relationship.</p>
 <p> </p>
 <div id="plotting-the-non-numeric-variables" class="section level4">
 <h4><strong>Plotting the non-numeric variables</strong></h4>
-<p>Plotting the charges by region <img src="your_turn_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Plotting the charges by region <img src="ins_regression_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Those in southeast have the highest third quartile in spending, with some outliers spending the most out of all individuals.</p>
 <p> </p>
-<p>Plotting charges by gender <img src="your_turn_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Plotting charges by gender <img src="ins_regression_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Men have a higher third quartile than spending than females.</p>
 <p> </p>
-<p>Plotting charges for smokers and non-smokers <img src="your_turn_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>smokers spend signifiantly more than non-smokers</p>
+<p>Plotting charges for smokers and non-smokers <img src="ins_regression_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>smokers spend significantly more than non-smokers</p>
 <p> </p>
-<p>Plotting charges by number of children <img src="your_turn_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Plotting charges by number of children <img src="ins_regression_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Those with 3 and 4 children spend the most on average, while those with 0 children also spend a fair amount. It is likely that there are less data points for those with more children, since it is rarer to have many children.</p>
 <p>I’ll investigate this clam</p>
 <pre class="r"><code>kid_spend &lt;- dat %&gt;% group_by(children) %&gt;% summarize(money_spent = sum(charges), num_fam = n())
@@ -471,11 +471,11 @@ head(dat_2)</code></pre>
 ## 5    32 male    28.9        0 no     northwest   3867. no   
 ## 6    31 female  25.7        0 no     southeast   3757. no</code></pre>
 <p> </p>
-<p>I’ll create a plot to show the impact of being obese on medical expenses. <img src="your_turn_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>I’ll create a plot to show the impact of being obese on medical expenses. <img src="ins_regression_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Charges are slightly higher on average, with many more extremes in charges for those who are obese.</p>
 <p> </p>
 <p>Intuition tells us obese smokers are usually at the most risk of having health problems I’ll make a plot for this demographic.</p>
-<p><img src="your_turn_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="ins_regression_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Obese Smokers are at by far the most risk, while smokers who are not obese are at more risk than those who are just obese.</p>
 <p> </p>
 </div>

@@ -12,7 +12,7 @@
 
 
 
-<title>An Analysis of Glassdoor Data Analyst listings</title>
+<title>An Analysis of Glassdoor Data Analyst Listings</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -351,7 +351,7 @@ div.tocify {
   <a href="glassdoor_analysis.html">Job Posts Analysis</a>
 </li>
 <li>
-  <a href="your_turn.html">Project 4</a>
+  <a href="ins_regression.html">Medical Expense Regression</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -365,16 +365,16 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">An Analysis of Glassdoor Data Analyst listings</h1>
+<h1 class="title toc-ignore">An Analysis of Glassdoor Data Analyst Listings</h1>
 
 </div>
 
 
 <p> </p>
-<div id="an-analysis-and-visualization-of-data-analyst-positions-by-location-industry-salary-done-using-data-cleaning-ggplot-and-dplyr." class="section level2">
-<h2>An analysis and visualization of data analyst positions by location, industry, salary done using data cleaning, ggplot and dplyr.</h2>
+<div id="using-data-cleaning-ggplot-and-dplyr-to-analyze-numerically-and-visually-data-analyst-positions-by-location-industry-and-salary" class="section level2">
+<h2>Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary</h2>
 <p> </p>
-<p>This projects data was collected using webscraping from Glassdoor to complie data analyst positions listed across the united states.</p>
+<p>This projects data was collected using webscraping from Glassdoor to compile data analyst positions listed across the united states.</p>
 <p>I am interested in finding out:</p>
 <ul>
 <li>The distribution of salaries for data analyst positions</li>
@@ -385,7 +385,7 @@ div.tocify {
 <p> </p>
 <p>I’ll be using visualizations of the data to help answer these questions, as well as the output of the data itself</p>
 <div id="loading-in-the-data" class="section level3">
-<h3>1. Loading in the data</h3>
+<h3><strong>1. Loading in the data</strong></h3>
 <pre><code>## New names:
 ## * `` -&gt; ...1</code></pre>
 <pre><code>## Observations: 2,253
@@ -429,7 +429,7 @@ div.tocify {
 <p>I chose to keep the smallest value in the estimated salary range, so our data may look like salaries are on the low side.</p>
 </div>
 <div id="visualizing-distribution-of-salaries" class="section level3">
-<h3>2. Visualizing distribution of salaries</h3>
+<h3><strong>2. Visualizing distribution of salaries</strong></h3>
 <p>I’ll create a histogram and print summary statistics to see what the salary range is</p>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   24.00   41.00   50.00   54.27   64.00  113.00</code></pre>
@@ -437,7 +437,7 @@ div.tocify {
 <p> </p>
 </div>
 <div id="what-industries-are-looking-for-analysts" class="section level3">
-<h3>3. What industries are looking for Analysts?</h3>
+<h3><strong>3. What industries are looking for Analysts?</strong></h3>
 <p>I’ll see which industries have more analyst position postings right now.</p>
 <pre><code>## # A tibble: 20 x 2
 ##    Industry                                    n
@@ -483,7 +483,7 @@ div.tocify {
 <p> </p>
 </div>
 <div id="what-do-data-anlysts-get-paid-in-different-industries" class="section level3">
-<h3>4. What do data anlysts get paid in different industries?</h3>
+<h3><strong>4. What do data anlysts get paid in different industries?</strong></h3>
 <p>Let’s see how much data analysts get paid on average based on what industry they work in.</p>
 <p>I’ll use the top 20 industries by amount of jobs postings on Glassdoor to determine this.</p>
 <pre><code>## # A tibble: 20 x 2
@@ -510,6 +510,7 @@ div.tocify {
 ## 19 State            15
 ## 20 Architectural    13</code></pre>
 <p>These are what industries pay data analysts the most on average</p>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 78 x 2
 ##    Industry      avg_sal
 ##    &lt;chr&gt;           &lt;dbl&gt;
@@ -529,7 +530,7 @@ div.tocify {
 <p> </p>
 </div>
 <div id="what-location-has-the-most-jobs-for-each-industry" class="section level3">
-<h3>5. What location has the most jobs for each industry</h3>
+<h3><strong>5. What location has the most jobs for each industry</strong></h3>
 <p>Now I’ll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New YOrk would have the most positions and the most industries that are currently hiring.</p>
 <pre><code>## # A tibble: 794 x 3
 ## # Groups:   Industry [77]
@@ -551,7 +552,7 @@ div.tocify {
 <p> </p>
 </div>
 <div id="conclusion" class="section level3">
-<h3>6. Conclusion</h3>
+<h3><strong>6. Conclusion</strong></h3>
 <p>New York is the city with the most jobs in the most industries that are hiring right now.</p>
 <p>Biotech is the industry which pays the most on average out of the top 20 industries with the most postings, while News pays the most overall on average.</p>
 <p>The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.</p>

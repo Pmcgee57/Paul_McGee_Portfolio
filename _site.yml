@@ -8,8 +8,8 @@ navbar:
       href: Heart_disease.html
     - text: "Job Posts Analysis"
       href: glassdoor_analysis.html
-    - text: "Project 4"
-      href: your_turn.html
+    - text: "Medical Expense Regression"
+      href: ins_regression.html
 output_dir: "."
 output:
   html_document:

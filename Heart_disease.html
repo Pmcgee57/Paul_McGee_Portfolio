@@ -349,10 +349,10 @@ div.tocify {
   <a href="Heart_disease.html">Cleveland Heart Disease Project</a>
 </li>
 <li>
-  <a href="getting_sophisticated.html">Job Posts Analysis</a>
+  <a href="glassdoor_analysis.html">Job Posts Analysis</a>
 </li>
 <li>
-  <a href="your_turn.html">Project 4</a>
+  <a href="ins_regression.html">Medical Expense Regression</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -379,10 +379,11 @@ div.tocify {
 <ol style="list-style-type: decimal">
 <li>age</li>
 <li>sex</li>
-<li>thalach - the maximum heart rate achieved.  </li>
+<li>thalach - the maximum heart rate achieved.</li>
 </ol>
+<p> </p>
 <div id="loading-the-data." class="section level3">
-<h3>1. Loading the data.</h3>
+<h3><strong>1. Loading the data.</strong></h3>
 <div id="first-ill-read-the-data-in." class="section level4">
 <h4>First I’ll read the data in.</h4>
 <pre class="r"><code>head(hd_data)</code></pre>
@@ -397,10 +398,11 @@ div.tocify {
 ## 6    56     1     2      120   236     0       0     178     0     0.8
 ## # ... with 4 more variables: slope &lt;dbl&gt;, ca &lt;dbl&gt;, thal &lt;dbl&gt;,
 ## #   class &lt;dbl&gt;</code></pre>
+<p> </p>
 </div>
 </div>
 <div id="recoding" class="section level3">
-<h3>2. Recoding</h3>
+<h3><strong>2. Recoding</strong></h3>
 <div id="im-going-to-recode-a-few-variables-so-they-may-be-properly-used-in-my-analysis." class="section level4">
 <h4>I’m going to recode a few variables so they may be properly used in my analysis.</h4>
 <p>I’ll use the ‘mutate’ function from dplyr to recode class into hd, which will be 0 if no risk of heart disease is present and 1 if there is a risk present. I’ll also recode sex to a factor so there are only two levels of male and female.</p>
@@ -411,7 +413,7 @@ hd_data &lt;- hd_data %&gt;% mutate(sex = factor(sex, levels = 0:1, labels = c(&
 </div>
 </div>
 <div id="chi-square-and-t---tests" class="section level3">
-<h3>3. Chi Square and T - tests</h3>
+<h3><strong>3. Chi Square and T - tests</strong></h3>
 <div id="now-using-some-statistical-tests-ill-see-if-my-predictors-are-related-to-heart-disease." class="section level4">
 <h4>Now, using some statistical tests I’ll see if my predictors are related to heart disease.</h4>
 <p>I’ll be using the chi-squared test to see if sex has an effect on having a risk of heart disease. Since sex is a categorical, binary variable in this dataset, we use the chi-square test to compare the equivalence of two proportions.  </p>
@@ -461,21 +463,23 @@ hd_data &lt;- hd_data %&gt;% mutate(sex = factor(sex, levels = 0:1, labels = c(&
 <li>Age has an effect on the risk of heart disease</li>
 <li>Maximum heart rate has an effect on the risk of heart disease</li>
 </ul>
+<p> </p>
 </div>
 </div>
 <div id="visualizing-the-variables" class="section level3">
-<h3>4. Visualizing the Variables</h3>
+<h3><strong>4. Visualizing the Variables</strong></h3>
 <p>First I’ll recode the “hd” variable to read as “disease” if a risk is present and " no disease" if it is not present.</p>
 <pre class="r"><code>hd_data%&gt;%mutate(hd_labelled = ifelse(hd == 0, &quot;No Disease&quot;, &quot;Disease&quot;)) -&gt; hd_data</code></pre>
 <p> </p>
 <div id="now-ill-create-some-plots-to-further-illustrate-the-potential-affects-of-these-variables-on-heart-disease." class="section level4">
 <h4>Now I’ll create some plots to further illustrate the potential affects of these variables on heart-disease.</h4>
 <p><img src="Heart_disease_files/figure-html/unnamed-chunk-7-1.png" width="672" /><img src="Heart_disease_files/figure-html/unnamed-chunk-7-2.png" width="672" /><img src="Heart_disease_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
-<p>Based on the plots, it appears that those with heart disease tend to be older, are more likley to be male and have a lower maximum heart rate.</p>
+<p>Based on the plots, it appears that those with heart disease tend to be older, are more likely to be male and have a lower maximum heart rate.</p>
+<p> </p>
 </div>
 </div>
 <div id="using-a-logistic-regression-to-test-if-age-sex-and-max-heart-rate-are-significant-predictors-of-heart-disease" class="section level3">
-<h3>5. Using a logistic regression to test if age, sex and max heart rate are significant predictors of heart disease</h3>
+<h3><strong>5. Using a logistic regression to test if age, sex and max heart rate are significant predictors of heart disease</strong></h3>
 <pre><code>## 
 ## Call:
 ## glm(formula = hd ~ age + sex + thalach, family = &quot;binomial&quot;, 
@@ -523,10 +527,11 @@ tidy_m</code></pre>
 ## 3 sexMale       1.49     0.307        4.86 0.00000119     4.45 
 ## 4 thalach      -0.0405   0.00707     -5.73 0.00000000993  0.960</code></pre>
 <p>The interpretation of this odds ratio would be that if the person is male, they are 4.4 times more likely to be at risk of heart disease. For a one unit increase in heart rate, the person lowers their odds of of heart disease by 0.96.</p>
+<p> </p>
 </div>
 </div>
 <div id="using-the-model-to-predict-the-probability-of-heart-disease" class="section level3">
-<h3>6. Using the model to predict the probability of heart disease</h3>
+<h3><strong>6. Using the model to predict the probability of heart disease</strong></h3>
 <p>I’ll get the predicted probability of heart disease using the model and create a cut-off (0.5) to say whether it is more or less likely if this person has heart disease.</p>
 <p>This could be implemented as a decision rule for clinical use. In practice, when an individual comes in for a health check-up, the doctor would like to know the predicted probability of heart disease for specific values of the predictors. In this case, those predictors would be</p>
 <ul>
@@ -551,9 +556,10 @@ p_new &lt;- predict(model,newdata, type = &quot;response&quot;)</code></pre>
 <pre><code>##         1 
 ## 0.1773002</code></pre>
 <p>This individual did not have a high probability of heart disease.</p>
+<p> </p>
 </div>
 <div id="model-performance" class="section level3">
-<h3>7. Model Performance</h3>
+<h3><strong>7. Model Performance</strong></h3>
 <p>I’ll use accuracy, area under curve and a confusion matrix to show how well the model does with predicting heart disease.</p>
 <ul>
 <li>accuracy - straightforward. which is the proportion of the total number of predictions that were correct. accuracy can be misleading when the response is rare, such as when the number of observations per class is not equally distributed.</li>

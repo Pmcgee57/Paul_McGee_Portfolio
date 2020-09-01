@@ -18,7 +18,7 @@ This is a project that I did using  track and field data using R to show which a
 
 &nbsp;  
 
-### 1. Reading in the data.
+### **1. Reading in the data.**
 
 ```{r, include = FALSE}
 library(tidyverse)
@@ -67,7 +67,7 @@ head(javelin_long,2)
 ```
 &nbsp;  
 
-### 2. Creating sumary statistics and creating new columns 
+### **2. Creating sumary statistics and creating new columns** 
 
 The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.
 
@@ -101,7 +101,7 @@ head(javelin_totals, 5)
 
 &nbsp;  
 
-### 3. Normalizing the data for easier comparison
+### **3. Normalizing the data for easier comparison**
 
 I'll normalize the summary statistics so they can be properly compared. 
 The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values so that they can be used for comparison. 
@@ -123,7 +123,7 @@ javelin_norm <- javelin_totals %>%
 
 &nbsp;  
 
-### 4. Assigning weights to Athletes statistics
+### **4. Assigning weights to Athletes statistics**
 
 To determine who the best athletes are, let's assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important.
 
@@ -139,7 +139,7 @@ arrange(desc(TotalScore))
 
 &nbsp;  
 
-### 5. Picking our team
+### **5. Picking our team**
 
 I'm going to take the top five athletes for our team from the dataframe we created by assigning the weights. Once we have our team, let's have a look at their stats.
 ```{r, results="hide"}
@@ -172,7 +172,7 @@ pool_stats
 
 &nbsp;
 
-### 6. How does my team stack up against the rest of the field?
+### **6. How does my team stack up against the rest of the field?**
 
 I'll see how my teams stats compares to the maximum and average of distance thrown as well as the maximum and average of the difference in an athletes last three and first three throws.
 In a business setting, I could use these plots of their stats to justify why I would want these athletes on my team. We can see all our athletes throw well above the average, with two of our athletes throwing longer on their last three then first three throws. We could say these are our "clutch" players. 
@@ -215,7 +215,7 @@ p_2 <- team_stats %>%
 p_2
 ```
 
-### 7. Simulating a meet between my team and another
+### **7. Simulating a meet between my team and another**
 
 Now, let's select  random athletes from athletes not on our team to play against us. We're going to create a fake meet to see if our teams total would be higher than the others.
 ```{r}

@@ -22,9 +22,12 @@ This project uses the cleveland heart disease dataset to discover what factors m
 1. age 
 2. sex 
 3. thalach - the maximum heart rate achieved. 
+
+
 &nbsp;  
 
-### 1. Loading the data.
+
+### **1. Loading the data.**
 #### First I'll read the data in.
 ```{r, include = FALSE}
 library(readxl)
@@ -34,7 +37,9 @@ hd_data <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/Clev
 head(hd_data)
 ```
 
-### 2. Recoding
+&nbsp;  
+
+### **2. Recoding**
 #### I'm going to recode a few variables so they may be properly used in my analysis.
 
 I'll use the 'mutate' function from dplyr to recode class into hd,
@@ -47,7 +52,7 @@ hd_data <- hd_data %>% mutate(sex = factor(sex, levels = 0:1, labels = c("Female
 ```
 &nbsp;
 
-### 3. Chi Square and T - tests
+### **3. Chi Square and T - tests**
 #### Now, using some statistical tests I'll see if my predictors are related to heart disease. 
 I'll be using the chi-squared test to see if sex has an effect on having a risk of heart disease.
 Since sex is a categorical, binary variable in this dataset, we use the chi-square test to compare the equivalence of two proportions.
@@ -80,7 +85,9 @@ print(hd_heartrate)
 * Age has an effect on the risk of heart disease 
 * Maximum heart rate has an effect on the risk of heart disease 
 
-### 4. Visualizing the Variables
+&nbsp;  
+
+### **4. Visualizing the Variables**
 First I'll recode the "hd" variable to read as "disease" if a risk is present and " no disease" if it is not present.
 ```{r, results='hide'}
 hd_data%>%mutate(hd_labelled = ifelse(hd == 0, "No Disease", "Disease")) -> hd_data
@@ -103,9 +110,11 @@ thal_plot <- ggplot(data = hd_data,aes(x = hd_labelled, y = thalach)) + geom_box
 thal_plot
 ```
 
-Based on the plots, it appears that those with heart disease tend to be older, are more likley to be male and have a lower maximum heart rate.
+Based on the plots, it appears that those with heart disease tend to be older, are more likely to be male and have a lower maximum heart rate.
 
-### 5. Using a logistic regression to test if age, sex and max heart rate are significant predictors of heart disease
+&nbsp;  
+
+### **5. Using a logistic regression to test if age, sex and max heart rate are significant predictors of heart disease**
 
 ```{r, echo=FALSE}
 model <- glm(data = hd_data, hd ~  age + sex + thalach, family = "binomial")
@@ -133,7 +142,9 @@ tidy_m
 The interpretation of this odds ratio would be that if the person is male, they are 4.4 times more likely to be at risk of heart disease.
 For a one unit increase in heart rate, the person lowers their odds of of heart disease by 0.96.
 
-### 6. Using the model to predict the probability of heart disease
+&nbsp;  
+
+### **6. Using the model to predict the probability of heart disease**
 I'll get the predicted probability of heart disease using the model and create a cut-off (0.5) to say whether it is more or less likely if this person has heart disease.
 
 This could be implemented as a decision rule for clinical use. In practice, when an individual comes in for a health check-up, the doctor would like to know the predicted probability of heart disease for specific values of the predictors. In this case, those predictors would be
@@ -165,7 +176,9 @@ p_new
 ```
 This individual did not have a high probability of heart disease.
 
-### 7. Model Performance
+&nbsp;  
+
+### **7. Model Performance**
 I'll use accuracy, area under curve and a confusion matrix to show how well the model does with predicting heart disease.
 
 * accuracy - straightforward. which is the proportion of the total number of predictions that were correct. accuracy can be misleading when the response is rare, such as when the number of observations per class is not equally distributed.
