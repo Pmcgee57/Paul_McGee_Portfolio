@@ -1,7 +1,5 @@
 ---
 title: "Scouting an Athletics Team"
-author: "Paul McGee"
-date: "8/17/2020"
 output: 
   html_document:
     toc: true
@@ -11,6 +9,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+&nbsp;  
 
 ## Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.
 
