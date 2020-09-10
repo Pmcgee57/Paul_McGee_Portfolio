@@ -11,7 +11,7 @@ My name is Paul McGee and I am a recent MBA graduate from Binghamton University 
 
 &nbsp;  
 
-The tabs at the top of the page can be used to navigate between the projects I currently have posted. Each projects involves some overlap of skills, but uses different analytical tools or methods to ultimately complete the task.
+The tabs at the top of the page can be used to navigate between the projects I currently have posted. Each project involves some overlap of skills, but uses different analytical tools or methods to ultimately complete the task.
 
 **Scouting an Athletics Team** - Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.
 
