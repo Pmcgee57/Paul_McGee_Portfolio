@@ -11,4 +11,18 @@ My name is Paul McGee and I am a recent MBA graduate from Binghamton University 
 
 &nbsp;  
 
-I can be reached at pmcgee1@binghamton.edu 
+The tabs at the top of the page can be used to navigate between the projects I currently have posted. Each projects involves some overlap of skills, but uses different analytical tools or methods to ultimately complete the task.
+
+**Scouting an Athletics Team** - Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.
+
+**Cleveland Heart Disease Project** - Using exploratory data analysis, tidyverse, ggplot, and multiple logistic regression to determine risk factors for heart disease.
+
+**Glassdoor Analysis** -  Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary.
+
+**Predicting Medical Expenses** - Using linear regression, exploratory data analysis and data visualization to predict the amount which individuals have spent on health care.
+
+&nbsp;  
+
+My email: pmcgee1@binghamton.edu
+
+LinkedIn: https://www.linkedin.com/in/paul-mcgee-51187b130/

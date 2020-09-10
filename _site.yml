@@ -8,7 +8,7 @@ navbar:
       href: Heart_disease.html
     - text: "Glassdoor Analysis"
       href: glassdoor_analysis.html
-    - text: "Medical Expense Regression"
+    - text: "Predicting Medical Expense"
       href: ins_regression.html
 output_dir: "."
 output:
