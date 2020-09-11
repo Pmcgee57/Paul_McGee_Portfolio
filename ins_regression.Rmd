@@ -25,8 +25,9 @@ library(relaimpo)
 
 #### Using linear regression, exploratory data analysis and data visualization to predict the amount which individuals have spent on health care.
 
-This projects uses the medical cost personal dataset to see what variables are most likely associated with the amount an individual has spent in medical costs and how much those costs are.
+This project uses the medical cost personal dataset to see what health variables are most impactful regarding the amount an individual has spent on medical costs and how much those costs are.
 
+variables include age, sex, bmi, # children, smoker, region of the us the person is from and the amount they spent on medical bills.
 
 ### **1. Reading in the data**
 ```{r, include=FALSE}
