@@ -269,13 +269,13 @@ print(paste0("Health care charges for Amy: $", round(predict(model_4, Amy), 2)))
 
 The variables in our model which are most significant in predicting the amount one has spent on medical bills include 
 
-> a persons age squared
-> their bmi
-> the number of children they have
-> if they are from the southeast or southwest
-> if they are a smoker
-> if they are obese
-> if they are an obese smoker
+* a persons age squared
+* their bmi
+* the number of children they have
+* if they are from the southeast or southwest
+* if they are a smoker
+* if they are obese
+* if they are an obese smoker
 
 Being obese, from the southwest or southeast actually have a negative impact on a persons medical bills while the rest all increase the amount spent.
 
