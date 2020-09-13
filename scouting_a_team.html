@@ -351,7 +351,7 @@ div.tocify {
   <a href="glassdoor_analysis.html">Glassdoor Analysis</a>
 </li>
 <li>
-  <a href="ins_regression.html">Medical Expense Regression</a>
+  <a href="ins_regression.html">Predicting Medical Expense</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -370,6 +370,7 @@ div.tocify {
 </div>
 
 
+<p> </p>
 <div id="using-the-dplyr-package-data-cleaning-functions-and-more-to-draft-and-compete-a-team-in-a-javelin-event." class="section level2">
 <h2>Using the dplyr package, data cleaning, functions and more to draft and compete a team in a javelin event.</h2>
 <p>This is a project that I did using track and field data using R to show which athletes I would want on my team, fantasy draft style. The event of interest I picked was the women’s javelin.</p>
@@ -424,8 +425,16 @@ javelin &lt;- javelin %&gt;% mutate(first_3 = Flight1 + Flight2 + Flight3 , last
 
 #Select columns to to keep from javelin and javelin totals
 keep &lt;- c(&quot;Athlete&quot;, &quot;TotalDistance&quot;, &quot;StandardDev&quot;, &quot;Success&quot;, &quot;diff&quot;)
-javelin_totals &lt;- left_join(javelin_totals, javelin, by = c(&quot;EventID&quot;, &quot;Athlete&quot;), all.x = T) %&gt;% subset( select = keep)
-head(javelin_totals, 5)</code></pre>
+javelin_totals &lt;- left_join(javelin_totals, javelin, by = c(&quot;EventID&quot;, &quot;Athlete&quot;), all.x = T) %&gt;% subset( select = keep)</code></pre>
+<pre><code>## # A tibble: 5 x 5
+## # Groups:   Athlete [1]
+##   Athlete       TotalDistance StandardDev Success    diff
+##   &lt;chr&gt;                 &lt;dbl&gt;       &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt;
+## 1 Abigail Gomez          152.        1.23       3  -52.9 
+## 2 Abigail Gomez          244.        1.63       5  -48   
+## 3 Abigail Gomez          207.        2.97       4 -110.  
+## 4 Abigail Gomez          222.        1.30       4   -3.11
+## 5 Abigail Gomez          155.        1.03       3   53.4</code></pre>
 <p> </p>
 </div>
 </div>
@@ -449,7 +458,7 @@ javelin_norm &lt;- javelin_totals %&gt;%
 </div>
 <div id="assigning-weights-to-athletes-statistics" class="section level3">
 <h3><strong>4. Assigning weights to Athletes statistics</strong></h3>
-<p>To determine who the best athletes are, let’s assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important.</p>
+<p>To determine who the best athletes are, let’s assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important. A total score which is higher means that the athlete is ranked as a better player.</p>
 <pre class="r"><code>weights &lt;- c(3.5, 2, 3, 1.5)
 
 #creating total score by multiplying columns by their weights
@@ -457,6 +466,15 @@ javelin_team &lt;- javelin_norm %&gt;%
 mutate(TotalScore = TotalDistance * weights[1] + StandardDev * weights[2] +
        Success + weights[3] + diff * weights[4]) %&gt;%
 arrange(desc(TotalScore))</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   Athlete               TotalDistance StandardDev Success  diff TotalScore
+##   &lt;chr&gt;                         &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Madalaine Stulce              0.708       0.745   1     0.494       8.71
+## 2 Dominique Ouellette           0.788       0.483   1     0.535       8.52
+## 3 Maggie Malone                 0.770       0.329   0.75  0.787       8.29
+## 4 Alicia DeShasier              0.753       0.327   0.833 0.687       8.15
+## 5 Heather Bergmann              0.737       0.376   1     0.533       8.13
+## 6 Diana Sammai Martinez         0.666       0.393   1     0.574       7.98</code></pre>
 <p> </p>
 </div>
 <div id="picking-our-team" class="section level3">
@@ -498,7 +516,7 @@ team_stats &lt;- javelin_totals %&gt;%
 <h3><strong>6. How does my team stack up against the rest of the field?</strong></h3>
 <p>I’ll see how my teams stats compares to the maximum and average of distance thrown as well as the maximum and average of the difference in an athletes last three and first three throws. In a business setting, I could use these plots of their stats to justify why I would want these athletes on my team. We can see all our athletes throw well above the average, with two of our athletes throwing longer on their last three then first three throws. We could say these are our “clutch” players.</p>
 <p>The maximum stat is represented by the solid line and the average by the dashed.</p>
-<p><img src="scouting_a_team_files/figure-html/unnamed-chunk-13-1.png" width="672" /><img src="scouting_a_team_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
+<p><img src="scouting_a_team_files/figure-html/unnamed-chunk-15-1.png" width="672" /><img src="scouting_a_team_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
 </div>
 <div id="simulating-a-meet-between-my-team-and-another" class="section level3">
 <h3><strong>7. Simulating a meet between my team and another</strong></h3>

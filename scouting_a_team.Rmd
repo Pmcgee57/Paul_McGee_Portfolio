@@ -95,6 +95,9 @@ javelin <- javelin %>% mutate(first_3 = Flight1 + Flight2 + Flight3 , last_3 = F
 #Select columns to to keep from javelin and javelin totals
 keep <- c("Athlete", "TotalDistance", "StandardDev", "Success", "diff")
 javelin_totals <- left_join(javelin_totals, javelin, by = c("EventID", "Athlete"), all.x = T) %>% subset( select = keep)
+```
+
+```{r, echo = FALSE}
 head(javelin_totals, 5)
 ```
 
@@ -124,7 +127,7 @@ javelin_norm <- javelin_totals %>%
 
 ### **4. Assigning weights to Athletes statistics**
 
-To determine who the best athletes are, let's assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important.
+To determine who the best athletes are, let's assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important. A total score which is higher means that the athlete is ranked as a better player.
 
 ```{r, results="hide"}
 weights <- c(3.5, 2, 3, 1.5)
@@ -136,6 +139,9 @@ mutate(TotalScore = TotalDistance * weights[1] + StandardDev * weights[2] +
 arrange(desc(TotalScore))
 ```
 
+```{r, echo=FALSE}
+head(javelin_team)
+```
 &nbsp;  
 
 ### **5. Picking our team**

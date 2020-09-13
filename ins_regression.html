@@ -457,8 +457,8 @@ kid_spend</code></pre>
 <p> </p>
 </div>
 </div>
-<div id="creating-new-a-variable-for-the-model" class="section level3">
-<h3><strong>3. Creating new a variable for the model</strong></h3>
+<div id="creating-a-new-variable-for-the-model" class="section level3">
+<h3><strong>3. Creating a new variable for the model</strong></h3>
 <p>I’ll create a new variable for those who are labeled as obese based on their BMI. According to the CDC, if your BMI is above 30 you are considered obese. Obese will be the name of the new variable, with responses being ‘yes’ or ‘no.’</p>
 <pre class="r"><code>dat_2$obese &lt;- ifelse(dat_2$bmi&gt; 30,&quot;yes&quot; ,&quot;no&quot;)
 head(dat_2)</code></pre>
@@ -638,7 +638,10 @@ print(paste0(&quot;Health care charges for Amy: $&quot;, round(predict(model_4, 
 </div>
 <div id="conclusions" class="section level3">
 <h3><strong>6. Conclusions</strong></h3>
-<p>The variables in our model which are most significant in predicting the amount one has spent on medical bills include &gt; a persons age squared &gt; their bmi &gt; the number of children they have &gt; if they are from the southeast or southwest &gt; if they are a smoker &gt; if they are obese &gt; if they are an obese smoker</p>
+<p>The variables in our model which are most significant in predicting the amount one has spent on medical bills include</p>
+<blockquote>
+<p>a persons age squared their bmi the number of children they have if they are from the southeast or southwest if they are a smoker if they are obese if they are an obese smoker</p>
+</blockquote>
 <p>Being obese, from the southwest or southeast actually have a negative impact on a persons medical bills while the rest all increase the amount spent.</p>
 <p>Models can be tuned an improved upon by building several to see what variables may or may not be significant. They can also be improved by adding interaction terms to such how multiple variables together may impact the target variables.</p>
 <p>This model was able to be used to predict outside individuals amount they likely spent on medical expenses. This models accuracy could perhaps be improved by splitting it into a training and test dataset to more accurately view how correct the predictions were within the data we have on hand.</p>

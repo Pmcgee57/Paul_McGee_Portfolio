@@ -120,7 +120,7 @@ There are less data points for families with less kids, because fewer families t
 
 &nbsp;  
 
-### **3. Creating new a variable for the model**
+### **3. Creating a new variable for the model**
 I'll create a new variable for those who are labeled as obese based on their BMI. According to the CDC, if your BMI is above 30 you are considered obese. Obese will be the name of the new variable, with responses being 'yes' or 'no.'
 ```{r, include=FALSE}
 dat_2 <- dat
@@ -268,6 +268,7 @@ print(paste0("Health care charges for Amy: $", round(predict(model_4, Amy), 2)))
 ### **6. Conclusions**
 
 The variables in our model which are most significant in predicting the amount one has spent on medical bills include 
+
 > a persons age squared
 > their bmi
 > the number of children they have
