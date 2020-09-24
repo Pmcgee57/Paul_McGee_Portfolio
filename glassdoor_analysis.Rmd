@@ -36,6 +36,7 @@ library(readr)
 library(dplyr)
 library(plotly)
 library(ggplot2)
+library(kableExtra)
 ```
 
 ```{r, echo = FALSE, warning=FALSE}
@@ -45,7 +46,7 @@ glimpse(data)
 
 &nbsp;  
 
-Defintely will have some data cleaning to do with this. I'm going to:
+Definitely will have some data cleaning to do with this. I'm going to:
 
 * remove extra text from salary column
 * remove the rating that shouldn't be in the company name column
@@ -74,10 +75,19 @@ unique(data_3$Salary)
 #make salary and rating numeric
 data_3$Salary <- as.numeric(data_3$Salary)
 data_3$Rating <- as.numeric(data_3$Rating)
+
+#delete text after commas, slashes and dashes in job title
+
+data_3$`Job Title`<- gsub("(.*),.*", "\\1", data_3$`Job Title`)
+data_3$`Job Title`<- gsub("/.*", "", data_3$`Job Title`)
+data_3$`Job Title`  <- gsub("-.*", "", data_3$`Job Title`)
 ```
 
 ```{r, echo = FALSE}
-head(data_3)
+h_d3<- (data_3)
+h_d3 <- h_d3 %>% select("Job Title",Salary, Rating, Comp_name)
+h_d3<- head(h_d3)
+h_d3 %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 I chose to keep the smallest value in the estimated salary range, so our data may look like salaries are on the low side.
 
@@ -89,19 +99,19 @@ I'll create a histogram and print summary statistics to see what the salary rang
 ```{r, echo = FALSE}
 summary(data_3$Salary)
 hist_sal<- data_3 %>% ggplot(aes(Salary)) + geom_histogram(binwidth = 2, color = "white", fill = "black") +
-  labs(title = "Data Analyst Positions Salaries")
+  labs(title = "Data Analyst Positions Salaries") + ylab("# of Positions")
 hist_sal
 ```
 
 &nbsp;  
 
 ### **3. What industries are looking for Analysts?**
-I'll see which industries have more analyst position postings right now.
+I'll see which industries have more analyst position postings right now. I'll view the top 20 industries.
 ```{r, echo = FALSE}
 data_4 <- data_3
 indus_count <- data_4 %>% count(Industry) %>% arrange(desc(n))
 indus_count <- subset(indus_count, Industry!="-1") 
-head(indus_count,20)
+head(indus_count,20) %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 &nbsp;  
@@ -114,28 +124,12 @@ indus_n <- indus_count
 
 #shortening names
 indus_n$Industry <- gsub("&", "", indus_n$Industry)
-indus_n
+indus_n %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 
 #Plots of most frequent industries looking for analysts
 
-#all black theme
-blackout <- theme(
-  # get rid of panel grids
-  panel.grid.major = element_blank(),
-  panel.grid.minor = element_blank(),
-  # Change plot and panel background
-  plot.background=element_rect(fill = "gray"),
-  panel.background = element_rect(fill = 'black'),
-  # Change legend 
-  legend.direction = "horizontal",
-  legend.background = element_rect(fill = "black", color = NA),
-  legend.key = element_rect(color = "gray", fill = "black"),
-  legend.title = element_text(color = "white"),
-  legend.text = element_text(color = "white")
-)
-
-indus_plot <- indus_n %>% ggplot(aes(x = Industry, y = n, fill = Industry)) + geom_col() +
-    theme(axis.text.x = element_text(angle = 90), legend.position="none") + ylab("Number of Positions") + blackout
+indus_plot <- indus_n %>% ggplot(aes(x = Industry, y = n)) + geom_col(fill = 'sky blue', color = "black") +
+    theme(axis.text.x = element_text(angle = 90), legend.position="none") + ylab("Number of Positions")
 ```
 ```{r, echo=FALSE,warning=FALSE}
 indus_plot
@@ -158,7 +152,7 @@ Sal_Indus$Industry <- gsub(",", "", Sal_Indus$Industry)
 counts <- Sal_Indus %>% count(Industry) %>% arrange(desc(n))
 #counts
 top20 <- head(counts, 20)
-top20
+top20  %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 names <- top20 %>% select(Industry)
 #class(names)
 names <- as.vector(names)
@@ -172,12 +166,14 @@ Industry_avg_sal <- Sal_Indus %>%
   group_by(Industry) %>%
     summarise(avg_sal = mean(Salary)) %>% 
       arrange(desc(avg_sal))
-Industry_avg_sal
+Industry_avg_sal$avg_sal<- round(Industry_avg_sal$avg_sal, 2)
+
+Industry_avg_sal  %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 
 Industry_avg_sal_2 <- head(Industry_avg_sal,10)
-Industry_avg_sal_plot <- Industry_avg_sal_2 %>% ggplot(aes(x = Industry, y = avg_sal, fill = Industry)) +
-  geom_col() + 
-    labs(title = "Average Salary for all Industries", y = "Average Salary") +
+Industry_avg_sal_plot <- Industry_avg_sal_2 %>% ggplot(aes(x = Industry, y = avg_sal)) +
+  geom_col(fill = 'orange', color = 'black') + 
+    labs(title = "Average Salary for Highest Paying Industries", y = "Average Salary") +
       theme(axis.text.x = element_text(angle = 90), legend.position="none",  axis.title.x = element_blank()) 
 Industry_avg_sal_plot
 
@@ -186,9 +182,10 @@ Industry_avg_sal_plot
 Now. let's see how much the industries with the most amount of jobs posted pay data analysts.
 ```{r, echo=FALSE}
 Highest_sal <- Industry_avg_sal[Industry_avg_sal$Industry %in% avector, ]
-Sal_plot <- Highest_sal %>% ggplot(aes(x = reorder(Industry, - avg_sal), y = avg_sal, fill = Industry)) +
-  geom_col() + theme(axis.text.x = element_text(angle = 90),legend.position="none",  axis.title.x = element_blank())  + 
-  labs(title = "Average Salary for Data Analysts by Industry with most Postings", x = "Average Salary")
+Sal_plot <- Highest_sal %>% ggplot(aes(x = reorder(Industry, - avg_sal), y = avg_sal)) +
+  geom_col(fill = 'mediumorchid2', color = 'black') + theme(axis.text.x = element_text(angle = 90),legend.position="none",  axis.title.x = element_blank())  + 
+  labs(title = "Average Salary for Data Analysts by Industry with most Postings") + 
+  ylab("Average Industry Salary")  
 
 Sal_plot
 ```
@@ -214,8 +211,9 @@ data_5 <- data_5[!grepl("-1", data_5$Industry), ]
 data_5$Location <- gsub(",.*","",data_5$Location)
 
 loc_count <- data_5 %>% group_by(Industry) %>% count(Location) %>% arrange(desc(n))
-loc_count
 loc_count <- loc_count[1:20,]
+loc_count  %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
+
 ```
 
 &nbsp;  
@@ -224,11 +222,12 @@ New York appears to have the most postings. To make this list easier to comprehe
 ```{r,echo=FALSE}
 loc_count_plot <- loc_count %>% ggplot(aes(x = Industry, y = n, fill = Industry)) + geom_col() + 
   theme(axis.text.x = element_text(angle = 90)) + 
-    facet_wrap(~ Location) + theme(axis.title.x = element_blank(),axis.title.y = element_blank()) +
+    facet_wrap(~ Location)  +
       ggtitle("Number of Analyst Jobs per Industry by Location") +
-        theme(plot.title = element_text(hjust = 0.5))
+        theme(plot.title = element_text(hjust = 0.5)) 
 
-loc_count_plot
+loc_count_plot + theme(axis.title.x = element_blank(),
+                                   axis.title.y = element_blank())
 ```
 
 &nbsp;  

@@ -26,6 +26,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -351,7 +353,7 @@ div.tocify {
   <a href="glassdoor_analysis.html">Glassdoor Analysis</a>
 </li>
 <li>
-  <a href="ins_regression.html">Medical Expense Regression</a>
+  <a href="ins_regression.html">Predicting Medical Expense</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -384,8 +386,8 @@ div.tocify {
 </ul>
 <p> </p>
 <p>I’ll be using visualizations of the data to help answer these questions, as well as the output of the data itself</p>
-<div id="loading-in-the-data" class="section level3">
-<h3><strong>1. Loading in the data</strong></h3>
+<div id="loading-in-and-cleaning-the-data" class="section level3">
+<h3><strong>1. Loading in and cleaning the data</strong></h3>
 <pre><code>## New names:
 ## * `` -&gt; ...1</code></pre>
 <pre><code>## Observations: 2,253
@@ -407,26 +409,119 @@ div.tocify {
 ## $ Competitors         &lt;chr&gt; &quot;-1&quot;, &quot;-1&quot;, &quot;GoDaddy&quot;, &quot;-1&quot;, &quot;DraftKings&quot;,...
 ## $ `Easy Apply`        &lt;dbl&gt; 1, -1, -1, -1, 1, -1, -1, 1, -1, -1, -1, -...</code></pre>
 <p> </p>
-<p>Defintely will have some data cleaning to do with this. I’m going to:</p>
+<p>Definitely will have some data cleaning to do with this. I’m going to:</p>
 <ul>
 <li>remove extra text from salary column</li>
 <li>remove the rating that shouldn’t be in the company name column</li>
 <li>remove rows where salary = ""</li>
 <li>make salary and rating a numeric data type for analysis</li>
 </ul>
-<pre><code>## # A tibble: 6 x 16
-##    ...1 `Job Title` Salary `Job Descriptio~ Rating Comp_name Location
-##   &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   
-## 1     0 Data Analy~     37 &quot;Are you eager ~    3.2 Vera Ins~ New Yor~
-## 2     1 Quality Da~     37 &quot;Overview\r\n\r~    3.8 Visiting~ New Yor~
-## 3     2 Senior Dat~     37 &quot;Weâ€™re lookin~    3.4 Squaresp~ New Yor~
-## 4     3 Data Analy~     37 &quot;Requisition Nu~    4.1 Celerity  New Yor~
-## 5     4 Reporting ~     37 &quot;ABOUT FANDUEL ~    3.9 FanDuel   New Yor~
-## 6     5 Data Analy~     37 &quot;About Cubist\r~    3.9 Point72   New Yor~
-## # ... with 9 more variables: Headquarters &lt;chr&gt;, Size &lt;chr&gt;,
-## #   Founded &lt;dbl&gt;, `Type of ownership` &lt;chr&gt;, Industry &lt;chr&gt;,
-## #   Sector &lt;chr&gt;, Revenue &lt;chr&gt;, Competitors &lt;chr&gt;, `Easy Apply` &lt;dbl&gt;</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Job Title
+</th>
+<th style="text-align:right;">
+Salary
+</th>
+<th style="text-align:right;">
+Rating
+</th>
+<th style="text-align:left;">
+Comp_name
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Data Analyst
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+3.2
+</td>
+<td style="text-align:left;">
+Vera Institute of
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Quality Data Analyst
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+3.8
+</td>
+<td style="text-align:left;">
+Visiting Nurse Service of New
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Senior Data Analyst
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+3.4
+</td>
+<td style="text-align:left;">
+Squarespace
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Data Analyst
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+4.1
+</td>
+<td style="text-align:left;">
+Celerity
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reporting Data Analyst
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+3.9
+</td>
+<td style="text-align:left;">
+FanDuel
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Data Analyst
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+3.9
+</td>
+<td style="text-align:left;">
+Point72
+</td>
+</tr>
+</tbody>
+</table>
 <p>I chose to keep the smallest value in the estimated salary range, so our data may look like salaries are on the low side.</p>
+<p> </p>
 </div>
 <div id="visualizing-distribution-of-salaries" class="section level3">
 <h3><strong>2. Visualizing distribution of salaries</strong></h3>
@@ -438,93 +533,1114 @@ div.tocify {
 </div>
 <div id="what-industries-are-looking-for-analysts" class="section level3">
 <h3><strong>3. What industries are looking for Analysts?</strong></h3>
-<p>I’ll see which industries have more analyst position postings right now.</p>
-<pre><code>## # A tibble: 20 x 2
-##    Industry                                    n
-##    &lt;chr&gt;                                   &lt;int&gt;
-##  1 IT Services                               325
-##  2 Staffing &amp; Outsourcing                    322
-##  3 Health Care Services &amp; Hospitals          151
-##  4 Computer Hardware &amp; Software              111
-##  5 Consulting                                111
-##  6 Investment Banking &amp; Asset Management      78
-##  7 Enterprise Software &amp; Network Solutions    69
-##  8 Internet                                   65
-##  9 Advertising &amp; Marketing                    51
-## 10 Banks &amp; Credit Unions                      51
-## 11 Insurance Carriers                         47
-## 12 Colleges &amp; Universities                    40
-## 13 Accounting                                 39
-## 14 Biotech &amp; Pharmaceuticals                  33
-## 15 Social Assistance                          23
-## 16 Aerospace &amp; Defense                        22
-## 17 Video Games                                20
-## 18 Lending                                    15
-## 19 State &amp; Regional Agencies                  15
-## 20 Architectural &amp; Engineering Services       13</code></pre>
+I’ll see which industries have more analyst position postings right now. I’ll view the top 20 industries.
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Industry
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+IT Services
+</td>
+<td style="text-align:right;">
+325
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing &amp; Outsourcing
+</td>
+<td style="text-align:right;">
+322
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Health Care Services &amp; Hospitals
+</td>
+<td style="text-align:right;">
+151
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Computer Hardware &amp; Software
+</td>
+<td style="text-align:right;">
+111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Consulting
+</td>
+<td style="text-align:right;">
+111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Investment Banking &amp; Asset Management
+</td>
+<td style="text-align:right;">
+78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Enterprise Software &amp; Network Solutions
+</td>
+<td style="text-align:right;">
+69
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Internet
+</td>
+<td style="text-align:right;">
+65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Advertising &amp; Marketing
+</td>
+<td style="text-align:right;">
+51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Banks &amp; Credit Unions
+</td>
+<td style="text-align:right;">
+51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Insurance Carriers
+</td>
+<td style="text-align:right;">
+47
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colleges &amp; Universities
+</td>
+<td style="text-align:right;">
+40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Accounting
+</td>
+<td style="text-align:right;">
+39
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Biotech &amp; Pharmaceuticals
+</td>
+<td style="text-align:right;">
+33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Social Assistance
+</td>
+<td style="text-align:right;">
+23
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Aerospace &amp; Defense
+</td>
+<td style="text-align:right;">
+22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Video Games
+</td>
+<td style="text-align:right;">
+20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lending
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+State &amp; Regional Agencies
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Architectural &amp; Engineering Services
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
-<p>Now I’ll shorten the text in the industry column to just keep the first word and create a plot to visualize the results of industries with 40 or more job postings.</p>
-<pre><code>## # A tibble: 12 x 2
-##    Industry        n
-##    &lt;chr&gt;       &lt;int&gt;
-##  1 IT            325
-##  2 Staffing      322
-##  3 Health        151
-##  4 Computer      111
-##  5 Consulting    111
-##  6 Investment     78
-##  7 Enterprise     69
-##  8 Internet       65
-##  9 Advertising    51
-## 10 Banks          51
-## 11 Insurance      47
-## 12 Colleges       40</code></pre>
+Now I’ll shorten the text in the industry column to just keep the first word and create a plot to visualize the results of industries with 40 or more job postings.
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Industry
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:right;">
+325
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:right;">
+322
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Health
+</td>
+<td style="text-align:right;">
+151
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Computer
+</td>
+<td style="text-align:right;">
+111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Consulting
+</td>
+<td style="text-align:right;">
+111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Investment
+</td>
+<td style="text-align:right;">
+78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Enterprise
+</td>
+<td style="text-align:right;">
+69
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Internet
+</td>
+<td style="text-align:right;">
+65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Advertising
+</td>
+<td style="text-align:right;">
+51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Banks
+</td>
+<td style="text-align:right;">
+51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Insurance
+</td>
+<td style="text-align:right;">
+47
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colleges
+</td>
+<td style="text-align:right;">
+40
+</td>
+</tr>
+</tbody>
+</table>
 <p><img src="glassdoor_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p> </p>
 </div>
 <div id="what-do-data-anlysts-get-paid-in-different-industries" class="section level3">
 <h3><strong>4. What do data anlysts get paid in different industries?</strong></h3>
 <p>Let’s see how much data analysts get paid on average based on what industry they work in.</p>
-<p>I’ll use the top 20 industries by amount of jobs postings on Glassdoor to determine this.</p>
-<pre><code>## # A tibble: 20 x 2
-##    Industry          n
-##    &lt;chr&gt;         &lt;int&gt;
-##  1 IT              325
-##  2 Staffing        322
-##  3 Health          172
-##  4 Computer        111
-##  5 Consulting      111
-##  6 Investment       78
-##  7 Enterprise       69
-##  8 Internet         65
-##  9 Advertising      51
-## 10 Banks            51
-## 11 Insurance        51
-## 12 Colleges         40
-## 13 Accounting       39
-## 14 Biotech          33
-## 15 Social           23
-## 16 Aerospace        22
-## 17 Video            20
-## 18 Lending          15
-## 19 State            15
-## 20 Architectural    13</code></pre>
+I’ll use the top 20 industries by amount of jobs postings on Glassdoor to determine this.
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Industry
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:right;">
+325
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:right;">
+322
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Health
+</td>
+<td style="text-align:right;">
+172
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Computer
+</td>
+<td style="text-align:right;">
+111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Consulting
+</td>
+<td style="text-align:right;">
+111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Investment
+</td>
+<td style="text-align:right;">
+78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Enterprise
+</td>
+<td style="text-align:right;">
+69
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Internet
+</td>
+<td style="text-align:right;">
+65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Advertising
+</td>
+<td style="text-align:right;">
+51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Banks
+</td>
+<td style="text-align:right;">
+51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Insurance
+</td>
+<td style="text-align:right;">
+51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colleges
+</td>
+<td style="text-align:right;">
+40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Accounting
+</td>
+<td style="text-align:right;">
+39
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Biotech
+</td>
+<td style="text-align:right;">
+33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Social
+</td>
+<td style="text-align:right;">
+23
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Aerospace
+</td>
+<td style="text-align:right;">
+22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Video
+</td>
+<td style="text-align:right;">
+20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lending
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+State
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Architectural
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
 <p>These are what industries pay data analysts the most on average</p>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre><code>## # A tibble: 78 x 2
-##    Industry      avg_sal
-##    &lt;chr&gt;           &lt;dbl&gt;
-##  1 News             84  
-##  2 Drug             82.5
-##  3 Education        69.7
-##  4 Sports           69  
-##  5 Utilities        67  
-##  6 Miscellaneous    66.5
-##  7 Chemical         65  
-##  8 Gambling         64  
-##  9 Venture          62.8
-## 10 Biotech          61.4
-## # ... with 68 more rows</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Industry
+</th>
+<th style="text-align:right;">
+avg_sal
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+News
+</td>
+<td style="text-align:right;">
+84.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Drug
+</td>
+<td style="text-align:right;">
+82.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Education
+</td>
+<td style="text-align:right;">
+69.67
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sports
+</td>
+<td style="text-align:right;">
+69.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Utilities
+</td>
+<td style="text-align:right;">
+67.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Miscellaneous
+</td>
+<td style="text-align:right;">
+66.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chemical
+</td>
+<td style="text-align:right;">
+65.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gambling
+</td>
+<td style="text-align:right;">
+64.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Venture
+</td>
+<td style="text-align:right;">
+62.83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Biotech
+</td>
+<td style="text-align:right;">
+61.36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Electrical
+</td>
+<td style="text-align:right;">
+60.83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Transportation
+</td>
+<td style="text-align:right;">
+59.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cable
+</td>
+<td style="text-align:right;">
+59.40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Accounting
+</td>
+<td style="text-align:right;">
+59.15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Internet
+</td>
+<td style="text-align:right;">
+58.43
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wholesale
+</td>
+<td style="text-align:right;">
+58.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Enterprise
+</td>
+<td style="text-align:right;">
+58.03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Commercial
+</td>
+<td style="text-align:right;">
+57.83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Computer
+</td>
+<td style="text-align:right;">
+57.60
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Real
+</td>
+<td style="text-align:right;">
+57.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hotels
+</td>
+<td style="text-align:right;">
+57.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Department
+</td>
+<td style="text-align:right;">
+56.60
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Health
+</td>
+<td style="text-align:right;">
+55.58
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:right;">
+55.52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other
+</td>
+<td style="text-align:right;">
+55.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Insurance
+</td>
+<td style="text-align:right;">
+54.90
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Motion
+</td>
+<td style="text-align:right;">
+54.67
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Logistics
+</td>
+<td style="text-align:right;">
+54.62
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+K-12
+</td>
+<td style="text-align:right;">
+54.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Stock
+</td>
+<td style="text-align:right;">
+54.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Financial
+</td>
+<td style="text-align:right;">
+53.83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Consulting
+</td>
+<td style="text-align:right;">
+53.37
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:right;">
+53.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Advertising
+</td>
+<td style="text-align:right;">
+53.18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Industrial
+</td>
+<td style="text-align:right;">
+53.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Federal
+</td>
+<td style="text-align:right;">
+52.67
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Architectural
+</td>
+<td style="text-align:right;">
+52.46
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Food
+</td>
+<td style="text-align:right;">
+52.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Legal
+</td>
+<td style="text-align:right;">
+52.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Aerospace
+</td>
+<td style="text-align:right;">
+51.95
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Banks
+</td>
+<td style="text-align:right;">
+51.51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colleges
+</td>
+<td style="text-align:right;">
+51.35
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brokerage
+</td>
+<td style="text-align:right;">
+51.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lending
+</td>
+<td style="text-align:right;">
+50.93
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Video
+</td>
+<td style="text-align:right;">
+50.80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TV
+</td>
+<td style="text-align:right;">
+50.40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Construction
+</td>
+<td style="text-align:right;">
+50.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Research
+</td>
+<td style="text-align:right;">
+49.75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Beauty
+</td>
+<td style="text-align:right;">
+49.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Energy
+</td>
+<td style="text-align:right;">
+49.29
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Membership
+</td>
+<td style="text-align:right;">
+49.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Publishing
+</td>
+<td style="text-align:right;">
+49.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Social
+</td>
+<td style="text-align:right;">
+48.83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Consumer
+</td>
+<td style="text-align:right;">
+48.67
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Home
+</td>
+<td style="text-align:right;">
+48.60
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Investment
+</td>
+<td style="text-align:right;">
+48.53
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Automotive
+</td>
+<td style="text-align:right;">
+48.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+General
+</td>
+<td style="text-align:right;">
+47.80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Municipal
+</td>
+<td style="text-align:right;">
+47.78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sporting
+</td>
+<td style="text-align:right;">
+47.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Truck
+</td>
+<td style="text-align:right;">
+46.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Telecommunications
+</td>
+<td style="text-align:right;">
+45.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+44.67
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+State
+</td>
+<td style="text-align:right;">
+44.53
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Convenience
+</td>
+<td style="text-align:right;">
+44.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Building
+</td>
+<td style="text-align:right;">
+43.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Catering
+</td>
+<td style="text-align:right;">
+42.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Express
+</td>
+<td style="text-align:right;">
+41.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Metals
+</td>
+<td style="text-align:right;">
+41.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Security
+</td>
+<td style="text-align:right;">
+41.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vehicle
+</td>
+<td style="text-align:right;">
+39.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pet
+</td>
+<td style="text-align:right;">
+37.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil
+</td>
+<td style="text-align:right;">
+36.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Casual
+</td>
+<td style="text-align:right;">
+36.20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Preschool
+</td>
+<td style="text-align:right;">
+35.67
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trucking
+</td>
+<td style="text-align:right;">
+35.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Grocery
+</td>
+<td style="text-align:right;">
+28.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Audiovisual
+</td>
+<td style="text-align:right;">
+24.00
+</td>
+</tr>
+</tbody>
+</table>
 <p><img src="glassdoor_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Now. let’s see how much the industries with the most amount of jobs posted pay data analysts. <img src="glassdoor_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p> </p>
@@ -532,21 +1648,243 @@ div.tocify {
 <div id="what-location-has-the-most-jobs-for-each-industry" class="section level3">
 <h3><strong>5. What location has the most jobs for each industry</strong></h3>
 <p>Now I’ll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New YOrk would have the most positions and the most industries that are currently hiring.</p>
-<pre><code>## # A tibble: 794 x 3
-## # Groups:   Industry [77]
-##    Industry   Location          n
-##    &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt;
-##  1 IT         New York         46
-##  2 Health     New York         36
-##  3 Staffing   New York         27
-##  4 Investment New York         23
-##  5 Staffing   Charlotte        22
-##  6 IT         Charlotte        18
-##  7 IT         San Francisco    18
-##  8 IT         San Jose         18
-##  9 Consulting New York         17
-## 10 Staffing   Chicago          17
-## # ... with 784 more rows</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Industry
+</th>
+<th style="text-align:left;">
+Location
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:left;">
+New York
+</td>
+<td style="text-align:right;">
+46
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Health
+</td>
+<td style="text-align:left;">
+New York
+</td>
+<td style="text-align:right;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:left;">
+New York
+</td>
+<td style="text-align:right;">
+27
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Investment
+</td>
+<td style="text-align:left;">
+New York
+</td>
+<td style="text-align:right;">
+23
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:left;">
+Charlotte
+</td>
+<td style="text-align:right;">
+22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:left;">
+Charlotte
+</td>
+<td style="text-align:right;">
+18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:left;">
+San Francisco
+</td>
+<td style="text-align:right;">
+18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:left;">
+San Jose
+</td>
+<td style="text-align:right;">
+18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Consulting
+</td>
+<td style="text-align:left;">
+New York
+</td>
+<td style="text-align:right;">
+17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:left;">
+Chicago
+</td>
+<td style="text-align:right;">
+17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Advertising
+</td>
+<td style="text-align:left;">
+New York
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Internet
+</td>
+<td style="text-align:left;">
+New York
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Internet
+</td>
+<td style="text-align:left;">
+San Francisco
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:left;">
+Denver
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:left;">
+San Francisco
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:left;">
+Chicago
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:left;">
+Houston
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+IT
+</td>
+<td style="text-align:left;">
+San Antonio
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Staffing
+</td>
+<td style="text-align:left;">
+Denver
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+State
+</td>
+<td style="text-align:left;">
+Austin
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
 <p>New York appears to have the most postings. To make this list easier to comprehend, I’ll plot number of positions per industry and facet wrap by city. <img src="glassdoor_analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p> </p>
