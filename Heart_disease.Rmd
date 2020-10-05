@@ -35,7 +35,7 @@ library(readxl)
 hd_data <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/Cleveland_hd.xls")
 ```
 ```{r}
-head(hd_data) %>% kbl(caption = "Raw Data") %>% kable_classic(full_width = F, html_font = "Cambria")
+head(hd_data) %>% kbl(caption = "Raw Data") %>% kable_classic(full_width = T, html_font = "Cambria")
 ```
 
 &nbsp;  
@@ -52,7 +52,7 @@ hd_data <- hd_data %>% mutate(hd = ifelse(class > 0, 1, 0))
 hd_data <- hd_data %>% mutate(sex = factor(sex, levels = 0:1, labels = c("Female", "Male")))
 ```
 ```{r, echo=FALSE}
-head(hd_data)  %>% kbl(caption = "Recoded Data") %>% kable_classic(full_width = F, html_font = "Cambria")
+head(hd_data)  %>% kbl(caption = "Recoded Data") %>% kable_classic(full_width = T, html_font = "Cambria")
 ```
 &nbsp;
 
@@ -131,7 +131,7 @@ summary(model)
 # tidy up the coefficient table
 library(broom)
 tidy_m <- tidy(model)
-tidy_m  %>% kbl(caption = "Coefficients Table") %>% kable_classic(full_width = F, html_font = "Cambria")
+tidy_m  %>% kbl(caption = "Coefficients Table") %>% kable_classic(full_width = T, html_font = "Cambria")
 ```
 At a p-value of 0.05, if the person is male and their maximum heart rate are significant predictors of their risk of heart disease.
 
@@ -145,7 +145,7 @@ So in our case, When the OR is greater than 1, we say the variable increases the
 
 ```{r, echo=FALSE}
 tidy_m$OR <- exp(tidy_m$estimate)
-tidy_m  %>% kbl(caption = "Odds Ratio of Coefficients") %>% kable_classic(full_width = F, html_font = "Cambria")
+tidy_m  %>% kbl(caption = "Odds Ratio of Coefficients") %>% kable_classic(full_width = T, html_font = "Cambria")
 ```
 The interpretation of this odds ratio would be that if the person is male, they are 4.4 times more likely to be at risk of heart disease.
 For a one unit increase in heart rate, the person lowers their odds of of heart disease by 0.96.

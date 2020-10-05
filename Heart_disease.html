@@ -385,8 +385,8 @@ div.tocify {
 <div id="loading-the-data." class="section level3">
 <h3><strong>1. Loading the data.</strong></h3>
 <p>First I’ll read the data in.</p>
-<pre class="r"><code>head(hd_data) %&gt;% kbl(caption = &quot;Raw Data&quot;) %&gt;% kable_classic(full_width = F, html_font = &quot;Cambria&quot;)</code></pre>
-<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<pre class="r"><code>head(hd_data) %&gt;% kbl(caption = &quot;Raw Data&quot;) %&gt;% kable_classic(full_width = T, html_font = &quot;Cambria&quot;)</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; margin-left: auto; margin-right: auto;">
 <caption>
 Raw Data
 </caption>
@@ -713,7 +713,7 @@ class
 <pre class="r"><code>hd_data &lt;- hd_data %&gt;% mutate(hd = ifelse(class &gt; 0, 1, 0))
 
 hd_data &lt;- hd_data %&gt;% mutate(sex = factor(sex, levels = 0:1, labels = c(&quot;Female&quot;, &quot;Male&quot;)))</code></pre>
-<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<table class=" lightable-classic" style="font-family: Cambria; margin-left: auto; margin-right: auto;">
 <caption>
 Recoded Data
 </caption>
@@ -1147,7 +1147,7 @@ Male
 ## AIC: 340.85
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<table class=" lightable-classic" style="font-family: Cambria; margin-left: auto; margin-right: auto;">
 <caption>
 Coefficients Table
 </caption>
@@ -1247,7 +1247,7 @@ thalach
 <h4><strong>Now, I’ll calculate Odds Ratio (OR)</strong></h4>
 <p>A logistic regression calculates the log of the odds ratio.The odds ratio is easier to interpret. It is used to quantify how strongly the presence or absence of a property is associated with the presence or absence of the outcome.</p>
 <p>So in our case, When the OR is greater than 1, we say the variable increases the Odds of having heart disease. Otherwise, we say the variable decreases the Odds of having heart disease.</p>
-<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<table class=" lightable-classic" style="font-family: Cambria; margin-left: auto; margin-right: auto;">
 <caption>
 Odds Ratio of Coefficients
 </caption>
