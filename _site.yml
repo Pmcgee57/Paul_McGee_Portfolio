@@ -2,14 +2,16 @@ name: "Paul McGee's Porfolio"
 navbar:
   title: "HOME"
   left:
-    - text: "Scouting an Athletics Team"
-      href: scouting_a_team.html
-    - text: "Cleveland Heart Disease Project"
-      href: Heart_disease.html
+ 
     - text: "Glassdoor Analysis"
       href: glassdoor_analysis.html
+    - text: "Cleveland Heart Disease Project"
+      href: Heart_disease.html
     - text: "Predicting Medical Expense"
       href: ins_regression.html
+    - text: "Scouting an Athletics Team"
+      href: scouting_a_team.html
+      
 output_dir: "."
 output:
   html_document:
