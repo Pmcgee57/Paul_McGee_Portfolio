@@ -22,13 +22,14 @@ This is a project that I did using  track and field data using R to show which a
 ```{r, include = FALSE}
 library(tidyverse)
 library(readxl)
+library(kableExtra)
 data <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/athletics.xlsx")
 ```
-```{r}
-head(data)
+```{r, echo=FALSE}
+head(data) %>% kbl(caption = "Raw Data") %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
-#### This is what first 5 rows of the uncleaned data looks like.
+This is what first 5 rows of the uncleaned data looks like.
 
 &nbsp;  
 I'm going to clean it up a bit. The changes I'll make include: 
@@ -62,26 +63,25 @@ javelin_long$Flight <- as.numeric(javelin_long$Flight)
 
 ```{r, echo = FALSE }
 # Examine the first 6 rows
-head(javelin_long,2)
+head(javelin_long) %>% kbl(caption = "Cleaned Data") %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 &nbsp;  
 
-### **2. Creating sumary statistics and creating new columns** 
+### **2. Creating summary statistics and creating new columns** 
 
 The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.
 
 These stats include total distance thrown, standard deviation of their throws and the number of successful throws they had.
 
-```{r}
+```{r, echo= FALSE ,message=FALSE}
 javelin_totals <- javelin_long %>%
   filter(Distance > 0) %>%
     group_by(Athlete, EventID) %>%
       summarize(TotalDistance = sum(Distance), 
           StandardDev = round(sd(Distance),3),
-              Success = n())
-```
-```{r, include = FALSE}
-javelin_totals[1:5,]
+              Success = n()) %>% ungroup()
+
+tail(javelin_totals) %>% kbl(caption = "New Stats and New Columns") %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 &nbsp;  
@@ -98,7 +98,7 @@ javelin_totals <- left_join(javelin_totals, javelin, by = c("EventID", "Athlete"
 ```
 
 ```{r, echo = FALSE}
-head(javelin_totals, 5)
+head(javelin_totals, 5) %>% kbl(caption = "New Stats with diff Column") %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 &nbsp;  
@@ -107,7 +107,10 @@ head(javelin_totals, 5)
 
 I'll normalize the summary statistics so they can be properly compared. 
 The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values so that they can be used for comparison. 
-```{r, results="hide", warning=FALSE}
+
+This puts the stats on a scale between 0.0 - 1.0. Being closer to 1.0 is better.
+
+```{r, results= FALSE , warning=FALSE, message=FALSE}
 #function to normalize summary stats
 
 norm <- function(result) {
@@ -115,19 +118,25 @@ norm <- function(result) {
 }
 
 aggstats <- c("TotalDistance", "StandardDev", "Success", "diff")
+```
 
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
 javelin_norm <- javelin_totals %>%
   ungroup() %>%
     mutate_at(aggstats, norm) %>%
       group_by(Athlete) %>%
         summarize_all(funs(mean))
+
+head(javelin_norm) %>% kbl(caption = "Normalized Data") %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 &nbsp;  
 
 ### **4. Assigning weights to Athletes statistics**
 
-To determine who the best athletes are, let's assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important. A total score which is higher means that the athlete is ranked as a better player.
+To determine who the best athletes are, let's assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. 
+
+More weight placed in a statistic means it is more important. A total score which is higher means that the athlete is ranked as a better player.I placed the most weight in TotalDistance since I consider this the most important stat. 
 
 ```{r, results="hide"}
 weights <- c(3.5, 2, 3, 1.5)
@@ -140,39 +149,38 @@ arrange(desc(TotalScore))
 ```
 
 ```{r, echo=FALSE}
-head(javelin_team)
+head(javelin_team) %>% kbl(caption = "Athletes with Weighted Scores") %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 &nbsp;  
 
 ### **5. Picking our team**
 
 I'm going to take the top five athletes for our team from the dataframe we created by assigning the weights. Once we have our team, let's have a look at their stats.
-```{r, results="hide"}
+```{r, echo = FALSE}
 
 #selecting first five rows to pick athletes for our team
 javelin_team<- javelin_team[1:5,]
-javelin_team
+javelin_team %>% kbl(caption = "My Team") %>% kable_classic(full_width = F, html_font = "Cambria")
+```
 
+```{r, include=FALSE}
 #Selecting athlete names from our team
-head(javelin_totals,1)
 Ath <- javelin_team$Athlete
+Ath
 
 #Compiling our teams stats 
 team_stats <- javelin_totals %>% 
-  filter(Athlete %in% Ath) %>%
-    summarize_all(funs(mean))
+  filter(Athlete %in% Ath)
+team_stats<- team_stats[c(2,4,6,7,8),]
+team_stats
 ```
+
+
 ```{r, echo= FALSE}
 pool_stats <- data.frame(do.call('cbind', sapply(javelin_totals, function(x) if(is.numeric(x)) c(max(x), mean(x)))))
 pool_stats$MaxAve <- c("Maximum", "Average")
 pool_stats <- pool_stats %>%
   gather(key="Statistic", value="Aggregate", -MaxAve)
-```
-
-And here's our team with their stats compared to that off the maximum and average of all athletes.
-```{r, echo=FALSE}
-(team_stats)
-pool_stats
 ```
 
 &nbsp;
@@ -220,20 +228,15 @@ p_2 <- team_stats %>%
 p_2
 ```
 
-### **7. Simulating a meet between my team and another**
+And here's our teams stats compared to the maximum and average stats of all athletes.
 
-Now, let's select  random athletes from athletes not on our team to play against us. We're going to create a fake meet to see if our teams total would be higher than the others.
-```{r}
-set.seed(77)
-home <- c(2,3,5)
-away <- sample(1:nrow(javelin_totals), 3, replace=FALSE)
-
-HomeTeam <- round(sum(team_stats$TotalDistance[home]),2)
-AwayTeam <- round(sum(javelin_totals$TotalDistance[away]),2)
-
-print(paste0("Javelin match, Final Score: ", HomeTeam, " - ", AwayTeam))
-ifelse(HomeTeam > AwayTeam, print("Your team won the match!"), print("Sorry, you lost."))
+```{r, echo=FALSE}
+team_stats %>% kbl(caption = "My Teams Stats") %>% kable_classic(full_width = F, html_font = "Cambria")
+pool_stats %>% kbl(caption = "All Athletes Stats") %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
-#### Our team won the match!
+### **7. Conclusion**
+
+Using summary statistics, data normalization and valuing what statistics are most important based on assignment of weights, I've identified what athletes I would consider to be the cream of the crop. Having all these competitors on one team would surely result in a tough match for any opposition.
+
 <br>

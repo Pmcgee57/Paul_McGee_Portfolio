@@ -26,6 +26,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -351,7 +353,7 @@ div.tocify {
   <a href="glassdoor_analysis.html">Glassdoor Analysis</a>
 </li>
 <li>
-  <a href="ins_regression.html">Medical Expense Regression</a>
+  <a href="ins_regression.html">Predicting Medical Expense</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -377,19 +379,240 @@ div.tocify {
 <p> </p>
 <div id="reading-in-the-data." class="section level3">
 <h3><strong>1. Reading in the data.</strong></h3>
-<pre class="r"><code>head(data)</code></pre>
-<pre><code>## # A tibble: 6 x 10
-##   Event Male_Female EventID Athlete Flight1 Flight2 Flight3 Flight4 Flight5
-##   &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-## 1 Shot~ Male              1 Ryan W~    21.3    21       0       0      21.8
-## 2 Shot~ Male              1 Cory M~    20.8     0       0       0      20.6
-## 3 Shot~ Male              1 Kurt R~    20.9    19.6     0       0       0  
-## 4 Shot~ Male              1 Derric~    19.4     0       0       0      19.2
-## 5 Shot~ Male              1 Jacob ~    18.4    18.9     0      19.1     0  
-## 6 Shot~ Male              1 Rob Go~    18.5    18.3    18.6    18.4    19.2
-## # ... with 1 more variable: Flight6 &lt;dbl&gt;</code></pre>
-<div id="this-is-what-first-5-rows-of-the-uncleaned-data-looks-like." class="section level4">
-<h4>This is what first 5 rows of the uncleaned data looks like.</h4>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Raw Data
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Event
+</th>
+<th style="text-align:left;">
+Male_Female
+</th>
+<th style="text-align:right;">
+EventID
+</th>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+Flight1
+</th>
+<th style="text-align:right;">
+Flight2
+</th>
+<th style="text-align:right;">
+Flight3
+</th>
+<th style="text-align:right;">
+Flight4
+</th>
+<th style="text-align:right;">
+Flight5
+</th>
+<th style="text-align:right;">
+Flight6
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Shot Put
+</td>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Ryan Whiting
+</td>
+<td style="text-align:right;">
+21.29
+</td>
+<td style="text-align:right;">
+21.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+21.80
+</td>
+<td style="text-align:right;">
+21.53
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Shot Put
+</td>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Cory Martin
+</td>
+<td style="text-align:right;">
+20.85
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+20.61
+</td>
+<td style="text-align:right;">
+20.93
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Shot Put
+</td>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Kurt Roberts
+</td>
+<td style="text-align:right;">
+20.89
+</td>
+<td style="text-align:right;">
+19.63
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+20.55
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Shot Put
+</td>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Derrick Vicars
+</td>
+<td style="text-align:right;">
+19.36
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+19.19
+</td>
+<td style="text-align:right;">
+19.83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Shot Put
+</td>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Jacob Thormaehlen
+</td>
+<td style="text-align:right;">
+18.35
+</td>
+<td style="text-align:right;">
+18.92
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+19.1
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+19.52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Shot Put
+</td>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Rob Golabek
+</td>
+<td style="text-align:right;">
+18.49
+</td>
+<td style="text-align:right;">
+18.34
+</td>
+<td style="text-align:right;">
+18.62
+</td>
+<td style="text-align:right;">
+18.4
+</td>
+<td style="text-align:right;">
+19.20
+</td>
+<td style="text-align:right;">
+18.72
+</td>
+</tr>
+</tbody>
+</table>
+<p>This is what first 5 rows of the uncleaned data looks like.</p>
 <p> <br />
 I’m going to clean it up a bit. The changes I’ll make include:</p>
 <ol style="list-style-type: decimal">
@@ -398,25 +621,247 @@ I’m going to clean it up a bit. The changes I’ll make include:</p>
 <li><p>Select the Womens Javelin event</p></li>
 <li><p>Change the column labeled “Distance” to the data type to numeric to make later analysis easier</p></li>
 </ol>
-<pre><code>## # A tibble: 2 x 4
-##   EventID Athlete         Flight Distance
-##     &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;    &lt;dbl&gt;
-## 1       8 Brittany Borman      1     54.0
-## 2       8 Ariana Ince          1     49.0</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Cleaned Data
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+EventID
+</th>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+Flight
+</th>
+<th style="text-align:right;">
+Distance
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Brittany Borman
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+54.02
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Ariana Ince
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+48.97
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Kara Patterson
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+50.14
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Kimberley Hamilton
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+47.96
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Laura Loht
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+44.40
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Brianna Bain
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+49.31
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
 </div>
-</div>
-<div id="creating-sumary-statistics-and-creating-new-columns" class="section level3">
-<h3><strong>2. Creating sumary statistics and creating new columns</strong></h3>
+<div id="creating-summary-statistics-and-creating-new-columns" class="section level3">
+<h3><strong>2. Creating summary statistics and creating new columns</strong></h3>
 <p>The next step is to create the total results for each event for each athlete, as well as create some summary statistics to better describe their performance.</p>
 <p>These stats include total distance thrown, standard deviation of their throws and the number of successful throws they had.</p>
-<pre class="r"><code>javelin_totals &lt;- javelin_long %&gt;%
-  filter(Distance &gt; 0) %&gt;%
-    group_by(Athlete, EventID) %&gt;%
-      summarize(TotalDistance = sum(Distance), 
-          StandardDev = round(sd(Distance),3),
-              Success = n())</code></pre>
-<pre><code>## `summarise()` regrouping output by &#39;Athlete&#39; (override with `.groups` argument)</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+New Stats and New Columns
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+EventID
+</th>
+<th style="text-align:right;">
+TotalDistance
+</th>
+<th style="text-align:right;">
+StandardDev
+</th>
+<th style="text-align:right;">
+Success
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Sharon Day-Monroe
+</td>
+<td style="text-align:right;">
+1766
+</td>
+<td style="text-align:right;">
+246.43
+</td>
+<td style="text-align:right;">
+2.284
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sharon Day-Monroe
+</td>
+<td style="text-align:right;">
+1773
+</td>
+<td style="text-align:right;">
+227.03
+</td>
+<td style="text-align:right;">
+3.229
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tairyn Montgomery
+</td>
+<td style="text-align:right;">
+176
+</td>
+<td style="text-align:right;">
+235.10
+</td>
+<td style="text-align:right;">
+2.870
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tiffany Forbito
+</td>
+<td style="text-align:right;">
+498
+</td>
+<td style="text-align:right;">
+232.79
+</td>
+<td style="text-align:right;">
+2.416
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tiffany Forbito
+</td>
+<td style="text-align:right;">
+511
+</td>
+<td style="text-align:right;">
+143.84
+</td>
+<td style="text-align:right;">
+3.235
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tiffany Forbito
+</td>
+<td style="text-align:right;">
+681
+</td>
+<td style="text-align:right;">
+182.23
+</td>
+<td style="text-align:right;">
+1.692
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
 <div id="now-ill-find-the-difference-between-the-persons-last-3-and-first-3-throws-and-then-use-a-left-join-to-combine-this-data-with-the-javelin_total-data-frame." class="section level4">
 <h4>Now I’ll find the difference between the persons last 3 and first 3 throws and then use a left join to combine this data with the javelin_total data frame.</h4>
@@ -426,39 +871,265 @@ javelin &lt;- javelin %&gt;% mutate(first_3 = Flight1 + Flight2 + Flight3 , last
 #Select columns to to keep from javelin and javelin totals
 keep &lt;- c(&quot;Athlete&quot;, &quot;TotalDistance&quot;, &quot;StandardDev&quot;, &quot;Success&quot;, &quot;diff&quot;)
 javelin_totals &lt;- left_join(javelin_totals, javelin, by = c(&quot;EventID&quot;, &quot;Athlete&quot;), all.x = T) %&gt;% subset( select = keep)</code></pre>
-<pre><code>## # A tibble: 5 x 5
-## # Groups:   Athlete [1]
-##   Athlete       TotalDistance StandardDev Success    diff
-##   &lt;chr&gt;                 &lt;dbl&gt;       &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt;
-## 1 Abigail Gomez          152.        1.23       3  -52.9 
-## 2 Abigail Gomez          244.        1.63       5  -48   
-## 3 Abigail Gomez          207.        2.97       4 -110.  
-## 4 Abigail Gomez          222.        1.30       4   -3.11
-## 5 Abigail Gomez          155.        1.03       3   53.4</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+New Stats with diff Column
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+TotalDistance
+</th>
+<th style="text-align:right;">
+StandardDev
+</th>
+<th style="text-align:right;">
+Success
+</th>
+<th style="text-align:right;">
+diff
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Abigail Gomez
+</td>
+<td style="text-align:right;">
+151.76
+</td>
+<td style="text-align:right;">
+1.232
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+-52.88
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Abigail Gomez
+</td>
+<td style="text-align:right;">
+244.12
+</td>
+<td style="text-align:right;">
+1.633
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+-48.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Abigail Gomez
+</td>
+<td style="text-align:right;">
+206.71
+</td>
+<td style="text-align:right;">
+2.969
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+-110.39
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Abigail Gomez
+</td>
+<td style="text-align:right;">
+221.83
+</td>
+<td style="text-align:right;">
+1.295
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+-3.11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Abigail Gomez
+</td>
+<td style="text-align:right;">
+154.80
+</td>
+<td style="text-align:right;">
+1.028
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+53.40
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
 </div>
 </div>
 <div id="normalizing-the-data-for-easier-comparison" class="section level3">
 <h3><strong>3. Normalizing the data for easier comparison</strong></h3>
 <p>I’ll normalize the summary statistics so they can be properly compared. The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values so that they can be used for comparison.</p>
+<p>This puts the stats on a scale between 0.0 - 1.0. Being closer to 1.0 is better.</p>
 <pre class="r"><code>#function to normalize summary stats
 
 norm &lt;- function(result) {
     (result - min(result)) / (max(result) - min(result))
 }
 
-aggstats &lt;- c(&quot;TotalDistance&quot;, &quot;StandardDev&quot;, &quot;Success&quot;, &quot;diff&quot;)
-
-javelin_norm &lt;- javelin_totals %&gt;%
-  ungroup() %&gt;%
-    mutate_at(aggstats, norm) %&gt;%
-      group_by(Athlete) %&gt;%
-        summarize_all(funs(mean))</code></pre>
+aggstats &lt;- c(&quot;TotalDistance&quot;, &quot;StandardDev&quot;, &quot;Success&quot;, &quot;diff&quot;)</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Normalized Data
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+TotalDistance
+</th>
+<th style="text-align:right;">
+StandardDev
+</th>
+<th style="text-align:right;">
+Success
+</th>
+<th style="text-align:right;">
+diff
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Abigail Gomez
+</td>
+<td style="text-align:right;">
+0.4459534
+</td>
+<td style="text-align:right;">
+0.2678973
+</td>
+<td style="text-align:right;">
+0.4500000
+</td>
+<td style="text-align:right;">
+0.3828542
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Abigail Gomez Hernandez
+</td>
+<td style="text-align:right;">
+0.2439924
+</td>
+<td style="text-align:right;">
+0.1146165
+</td>
+<td style="text-align:right;">
+0.2500000
+</td>
+<td style="text-align:right;">
+0.7195185
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alicia DeShasier
+</td>
+<td style="text-align:right;">
+0.7529941
+</td>
+<td style="text-align:right;">
+0.3267327
+</td>
+<td style="text-align:right;">
+0.8333333
+</td>
+<td style="text-align:right;">
+0.6870598
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Allison Updike
+</td>
+<td style="text-align:right;">
+0.2831123
+</td>
+<td style="text-align:right;">
+0.6392012
+</td>
+<td style="text-align:right;">
+0.2500000
+</td>
+<td style="text-align:right;">
+0.3203585
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alyssa Olin
+</td>
+<td style="text-align:right;">
+0.4688902
+</td>
+<td style="text-align:right;">
+0.2497063
+</td>
+<td style="text-align:right;">
+0.5000000
+</td>
+<td style="text-align:right;">
+0.3089929
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ariana Ince
+</td>
+<td style="text-align:right;">
+0.6602443
+</td>
+<td style="text-align:right;">
+0.3419779
+</td>
+<td style="text-align:right;">
+0.6923077
+</td>
+<td style="text-align:right;">
+0.4460812
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
 </div>
 <div id="assigning-weights-to-athletes-statistics" class="section level3">
 <h3><strong>4. Assigning weights to Athletes statistics</strong></h3>
-<p>To determine who the best athletes are, let’s assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10. More weight placed in a statistic means it is more important. A total score which is higher means that the athlete is ranked as a better player.</p>
+<p>To determine who the best athletes are, let’s assign weights to the athletes for their distance, standard deviation of distance, if they were successful in their throw and the difference in their throws. Weights sum to 10.</p>
+<p>More weight placed in a statistic means it is more important. A total score which is higher means that the athlete is ranked as a better player.I placed the most weight in TotalDistance since I consider this the most important stat.</p>
 <pre class="r"><code>weights &lt;- c(3.5, 2, 3, 1.5)
 
 #creating total score by multiplying columns by their weights
@@ -466,50 +1137,289 @@ javelin_team &lt;- javelin_norm %&gt;%
 mutate(TotalScore = TotalDistance * weights[1] + StandardDev * weights[2] +
        Success + weights[3] + diff * weights[4]) %&gt;%
 arrange(desc(TotalScore))</code></pre>
-<pre><code>## # A tibble: 6 x 6
-##   Athlete               TotalDistance StandardDev Success  diff TotalScore
-##   &lt;chr&gt;                         &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
-## 1 Madalaine Stulce              0.708       0.745   1     0.494       8.71
-## 2 Dominique Ouellette           0.788       0.483   1     0.535       8.52
-## 3 Maggie Malone                 0.770       0.329   0.75  0.787       8.29
-## 4 Alicia DeShasier              0.753       0.327   0.833 0.687       8.15
-## 5 Heather Bergmann              0.737       0.376   1     0.533       8.13
-## 6 Diana Sammai Martinez         0.666       0.393   1     0.574       7.98</code></pre>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Athletes with Weighted Scores
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+TotalDistance
+</th>
+<th style="text-align:right;">
+StandardDev
+</th>
+<th style="text-align:right;">
+Success
+</th>
+<th style="text-align:right;">
+diff
+</th>
+<th style="text-align:right;">
+TotalScore
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Madalaine Stulce
+</td>
+<td style="text-align:right;">
+0.7082461
+</td>
+<td style="text-align:right;">
+0.7445880
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.4944579
+</td>
+<td style="text-align:right;">
+8.709724
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dominique Ouellette
+</td>
+<td style="text-align:right;">
+0.7876658
+</td>
+<td style="text-align:right;">
+0.4825474
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.5347030
+</td>
+<td style="text-align:right;">
+8.523979
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maggie Malone
+</td>
+<td style="text-align:right;">
+0.7704656
+</td>
+<td style="text-align:right;">
+0.3290821
+</td>
+<td style="text-align:right;">
+0.7500000
+</td>
+<td style="text-align:right;">
+0.7868895
+</td>
+<td style="text-align:right;">
+8.285128
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alicia DeShasier
+</td>
+<td style="text-align:right;">
+0.7529941
+</td>
+<td style="text-align:right;">
+0.3267327
+</td>
+<td style="text-align:right;">
+0.8333333
+</td>
+<td style="text-align:right;">
+0.6870598
+</td>
+<td style="text-align:right;">
+8.152868
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Heather Bergmann
+</td>
+<td style="text-align:right;">
+0.7370625
+</td>
+<td style="text-align:right;">
+0.3764054
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.5326896
+</td>
+<td style="text-align:right;">
+8.131564
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diana Sammai Martinez
+</td>
+<td style="text-align:right;">
+0.6658357
+</td>
+<td style="text-align:right;">
+0.3926833
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.5736924
+</td>
+<td style="text-align:right;">
+7.976330
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
 </div>
 <div id="picking-our-team" class="section level3">
 <h3><strong>5. Picking our team</strong></h3>
-<p>I’m going to take the top five athletes for our team from the dataframe we created by assigning the weights. Once we have our team, let’s have a look at their stats.</p>
-<pre class="r"><code>#selecting first five rows to pick athletes for our team
-javelin_team&lt;- javelin_team[1:5,]
-javelin_team
-
-#Selecting athlete names from our team
-head(javelin_totals,1)
-Ath &lt;- javelin_team$Athlete
-
-#Compiling our teams stats 
-team_stats &lt;- javelin_totals %&gt;% 
-  filter(Athlete %in% Ath) %&gt;%
-    summarize_all(funs(mean))</code></pre>
-<p>And here’s our team with their stats compared to that off the maximum and average of all athletes.</p>
-<pre><code>## # A tibble: 5 x 5
-##   Athlete             TotalDistance StandardDev Success  diff
-##   &lt;chr&gt;                       &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
-## 1 Alicia DeShasier             288.        1.98    5.33 38.1 
-## 2 Dominique Ouellette          299.        2.91    6     2.88
-## 3 Heather Bergmann             283.        2.28    6     2.41
-## 4 Madalaine Stulce             275.        4.47    6    -6.42
-## 5 Maggie Malone                293.        2.00    5    61.1</code></pre>
-<pre><code>##    MaxAve     Statistic  Aggregate
-## 1 Maximum TotalDistance 362.540000
-## 2 Average TotalDistance 222.048483
-## 3 Maximum   StandardDev   5.994000
-## 4 Average   StandardDev   2.056079
-## 5 Maximum       Success   6.000000
-## 6 Average       Success   4.432584
-## 7 Maximum          diff 110.340000
-## 8 Average          diff  -7.720056</code></pre>
+I’m going to take the top five athletes for our team from the dataframe we created by assigning the weights. Once we have our team, let’s have a look at their stats.
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+My Team
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+TotalDistance
+</th>
+<th style="text-align:right;">
+StandardDev
+</th>
+<th style="text-align:right;">
+Success
+</th>
+<th style="text-align:right;">
+diff
+</th>
+<th style="text-align:right;">
+TotalScore
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Madalaine Stulce
+</td>
+<td style="text-align:right;">
+0.7082461
+</td>
+<td style="text-align:right;">
+0.7445880
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.4944579
+</td>
+<td style="text-align:right;">
+8.709724
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dominique Ouellette
+</td>
+<td style="text-align:right;">
+0.7876658
+</td>
+<td style="text-align:right;">
+0.4825474
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.5347030
+</td>
+<td style="text-align:right;">
+8.523979
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maggie Malone
+</td>
+<td style="text-align:right;">
+0.7704656
+</td>
+<td style="text-align:right;">
+0.3290821
+</td>
+<td style="text-align:right;">
+0.7500000
+</td>
+<td style="text-align:right;">
+0.7868895
+</td>
+<td style="text-align:right;">
+8.285128
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alicia DeShasier
+</td>
+<td style="text-align:right;">
+0.7529941
+</td>
+<td style="text-align:right;">
+0.3267327
+</td>
+<td style="text-align:right;">
+0.8333333
+</td>
+<td style="text-align:right;">
+0.6870598
+</td>
+<td style="text-align:right;">
+8.152868
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Heather Bergmann
+</td>
+<td style="text-align:right;">
+0.7370625
+</td>
+<td style="text-align:right;">
+0.3764054
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.5326896
+</td>
+<td style="text-align:right;">
+8.131564
+</td>
+</tr>
+</tbody>
+</table>
 <p> </p>
 </div>
 <div id="how-does-my-team-stack-up-against-the-rest-of-the-field" class="section level3">
@@ -517,26 +1427,231 @@ team_stats &lt;- javelin_totals %&gt;%
 <p>I’ll see how my teams stats compares to the maximum and average of distance thrown as well as the maximum and average of the difference in an athletes last three and first three throws. In a business setting, I could use these plots of their stats to justify why I would want these athletes on my team. We can see all our athletes throw well above the average, with two of our athletes throwing longer on their last three then first three throws. We could say these are our “clutch” players.</p>
 <p>The maximum stat is represented by the solid line and the average by the dashed.</p>
 <p><img src="scouting_a_team_files/figure-html/unnamed-chunk-15-1.png" width="672" /><img src="scouting_a_team_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<p>And here’s our teams stats compared to the maximum and average stats of all athletes.</p>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+My Teams Stats
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Athlete
+</th>
+<th style="text-align:right;">
+TotalDistance
+</th>
+<th style="text-align:right;">
+StandardDev
+</th>
+<th style="text-align:right;">
+Success
+</th>
+<th style="text-align:right;">
+diff
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Alicia DeShasier
+</td>
+<td style="text-align:right;">
+319.86
+</td>
+<td style="text-align:right;">
+2.257
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dominique Ouellette
+</td>
+<td style="text-align:right;">
+299.21
+</td>
+<td style="text-align:right;">
+2.804
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+-3.51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Heather Bergmann
+</td>
+<td style="text-align:right;">
+283.43
+</td>
+<td style="text-align:right;">
+2.278
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+2.41
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Madalaine Stulce
+</td>
+<td style="text-align:right;">
+274.76
+</td>
+<td style="text-align:right;">
+4.472
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+-6.42
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maggie Malone
+</td>
+<td style="text-align:right;">
+293.48
+</td>
+<td style="text-align:right;">
+1.996
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+61.12
+</td>
+</tr>
+</tbody>
+</table>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+All Athletes Stats
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+MaxAve
+</th>
+<th style="text-align:left;">
+Statistic
+</th>
+<th style="text-align:right;">
+Aggregate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Maximum
+</td>
+<td style="text-align:left;">
+TotalDistance
+</td>
+<td style="text-align:right;">
+362.540000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Average
+</td>
+<td style="text-align:left;">
+TotalDistance
+</td>
+<td style="text-align:right;">
+222.048483
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maximum
+</td>
+<td style="text-align:left;">
+StandardDev
+</td>
+<td style="text-align:right;">
+5.994000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Average
+</td>
+<td style="text-align:left;">
+StandardDev
+</td>
+<td style="text-align:right;">
+2.056079
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maximum
+</td>
+<td style="text-align:left;">
+Success
+</td>
+<td style="text-align:right;">
+6.000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Average
+</td>
+<td style="text-align:left;">
+Success
+</td>
+<td style="text-align:right;">
+4.432584
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maximum
+</td>
+<td style="text-align:left;">
+diff
+</td>
+<td style="text-align:right;">
+110.340000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Average
+</td>
+<td style="text-align:left;">
+diff
+</td>
+<td style="text-align:right;">
+-7.720056
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="simulating-a-meet-between-my-team-and-another" class="section level3">
-<h3><strong>7. Simulating a meet between my team and another</strong></h3>
-<p>Now, let’s select random athletes from athletes not on our team to play against us. We’re going to create a fake meet to see if our teams total would be higher than the others.</p>
-<pre class="r"><code>set.seed(77)
-home &lt;- c(2,3,5)
-away &lt;- sample(1:nrow(javelin_totals), 3, replace=FALSE)
-
-HomeTeam &lt;- round(sum(team_stats$TotalDistance[home]),2)
-AwayTeam &lt;- round(sum(javelin_totals$TotalDistance[away]),2)
-
-print(paste0(&quot;Javelin match, Final Score: &quot;, HomeTeam, &quot; - &quot;, AwayTeam))</code></pre>
-<pre><code>## [1] &quot;Javelin match, Final Score: 875.57 - 618.64&quot;</code></pre>
-<pre class="r"><code>ifelse(HomeTeam &gt; AwayTeam, print(&quot;Your team won the match!&quot;), print(&quot;Sorry, you lost.&quot;))</code></pre>
-<pre><code>## [1] &quot;Your team won the match!&quot;</code></pre>
-<pre><code>## [1] &quot;Your team won the match!&quot;</code></pre>
-<div id="our-team-won-the-match" class="section level4">
-<h4>Our team won the match!</h4>
+<div id="conclusion" class="section level3">
+<h3><strong>7. Conclusion</strong></h3>
+<p>Using summary statistics, data normalization and valuing what statistics are most important based on assignment of weights, I’ve identified what athletes I would consider to be the cream of the crop. Having all these competitors on one team would surely result in a tough match for any opposition.</p>
 <p><br></p>
-</div>
 </div>
 </div>
 
