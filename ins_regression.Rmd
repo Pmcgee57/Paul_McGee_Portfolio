@@ -19,6 +19,7 @@ library(ggplot2)
 library(GGally)
 library(psych)
 library(relaimpo)
+library(kableExtra)
 ```
 
 &nbsp;  
@@ -33,16 +34,17 @@ variables include age, sex, bmi, # children, smoker, region of the us the person
 ```{r, include=FALSE}
 dat <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/insurance.xlsx")
 ```
-```{r}
-head(dat)
-str(dat)
+```{r, echo= FALSE}
+head(dat) %>% kbl(caption = "Raw Data") %>% kable_classic(full_width = T, html_font = "Cambria")
+#str(dat)
 ```
 The variables in this dataset include age, sex, bmi, # of children, region, smoker and the amount charged.
 
 &nbsp;  
 
 ### **2. Exploratory data analysis**
-I'll have a look at a quick summary of the data
+I'll have a look at a quick summary of the data. Some quick observations can be made such as that the range of ages is between 18 and 64 and the maximum charged for health care cost is $63,770.00
+
 ```{r,echo=FALSE}
 summary(dat)
 ```
@@ -69,6 +71,7 @@ Once again these plots show that age is most closely correlated with charges amo
 #### **Plotting the non-numeric variables**
 
 Plotting the charges by region
+
 ```{r, echo=FALSE}
 region_plot <- dat %>% ggplot(aes(x = region, y = charges, fill = region)) + geom_boxplot() + 
   ggtitle(("Boxplot of Medical Charges Per region"))
@@ -83,7 +86,7 @@ Plotting charges by gender
 ```{r, echo=FALSE}
 sex_plot <- dat %>% ggplot(aes(x = sex, y = charges, fill = sex)) + geom_boxplot() + 
   ggtitle(("Boxplot of Medical Charges by Sex"))
-sex_plot
+sex_plot + xlab("Sex") + ylab("Charges")
 ```
 
 Men have a higher third quartile than spending than females.
@@ -94,7 +97,7 @@ Plotting charges for smokers and non-smokers
 ```{r, echo=FALSE}
 smoke_plot <- dat %>% ggplot(aes(x = smoker, y = charges, fill = smoker)) + geom_boxplot() + 
   ggtitle(("Boxplot of Medical Charges for Smoker/non-Smoker"))
-smoke_plot
+smoke_plot + xlab("Smoker") + ylab("Charges")
 ```
 
 smokers spend significantly more than non-smokers
@@ -105,7 +108,7 @@ Plotting charges by number of children
 ```{r, echo=FALSE}
 kid_plot <- dat %>% ggplot(aes(x = as.factor(children), y = charges)) + geom_boxplot(fill = c(2:7)) + 
   ggtitle(("Boxplot of Medical Charges Per # of Children"))
-kid_plot
+kid_plot + xlab("Number of Children")
 ```
 
 Those with 3 and 4 children spend the most on average, while those with 0 children also spend a fair amount. It is likely that there are less data points for those with more children, since it is rarer to have many children. 
@@ -127,9 +130,10 @@ dat_2 <- dat
 ```
 ```{r}
 dat_2$obese <- ifelse(dat_2$bmi> 30,"yes" ,"no")
-head(dat_2)
 ```
-
+```{r,echo=FALSE}
+head(dat_2) %>% kbl(caption = "Data with New Variable") %>% kable_classic(full_width = T, html_font = "Cambria")
+```
 &nbsp;  
 
 I'll create a plot to show the impact of being obese on medical expenses.
@@ -161,7 +165,7 @@ Obese Smokers are at by far the most risk, while smokers who are not obese are a
 
 &nbsp;  
 
-### **4. Model Creation**
+### **4. Model creation**
 I'll create a few models so that I can tune the variables selected to maximize my R-squared and adjusted R-squared, which  represents the proportion of the variance for a dependent variable that's explained by an independent variable or variables in a regression model.
 
 First I will implement a kitchen sink approach using the variables.
