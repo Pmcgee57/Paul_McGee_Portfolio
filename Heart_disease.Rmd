@@ -158,7 +158,7 @@ I'll get the predicted probability of heart disease using the model and create a
 This could be implemented as a decision rule for clinical use. In practice, when an individual comes in for a health check-up, the doctor would like to know the predicted probability of heart disease for specific values of the predictors. In this case, those predictors would be
 
 * age
-* sex
+* sex 
 * maximum heart rate
 ```{r}
 
