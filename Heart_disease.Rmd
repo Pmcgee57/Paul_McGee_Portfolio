@@ -147,8 +147,8 @@ So in our case, When the OR is greater than 1, we say the variable increases the
 tidy_m$OR <- exp(tidy_m$estimate)
 tidy_m  %>% kbl(caption = "Odds Ratio of Coefficients") %>% kable_classic(full_width = T, html_font = "Cambria")
 ```
-The interpretation of this odds ratio would be that if the person is male, they are 4.4 times more likely to be at risk of heart disease.
-For a one unit increase in heart rate, the person lowers their odds of of heart disease by 0.96.
+An example of an interpretation of the this table would be that if the person is male, they are 4.4 times more likely to be at risk of heart disease. Another interpretation would be that
+for a one unit increase in heart rate, the person lowers their odds of of heart disease by 0.96.
 
 &nbsp;  
 
