@@ -14,7 +14,7 @@ My name is Paul McGee and I am a recent MBA graduate from Binghamton University 
 The tabs at the top of the page can be used to navigate between the projects I currently have posted. Each project involves some overlap of skills, but uses different analytical tools or methods to ultimately complete the task.
 
 
-**Glassdoor Analysis** -  Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary.
+**Glassdoor Analysis** -  Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary as well as performing text and sentiment analysis on the job descriptions.
 
 **Cleveland Heart Disease Project** - Using exploratory data analysis, tidyverse, ggplot, and multiple logistic regression to determine risk factors for heart disease.
 

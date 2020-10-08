@@ -8,7 +8,7 @@ output:
 
 &nbsp;  
 
-## Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary
+## Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary as well as performing text and sentiment analysis on the job descriptions.
 
 &nbsp;  
 
