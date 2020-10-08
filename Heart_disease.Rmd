@@ -34,7 +34,7 @@ First I'll read the data in.
 library(readxl)
 hd_data <- read_excel("C:/Users/pmcgee/Downloads/Analyst Portfolio/datasets/Cleveland_hd.xls")
 ```
-```{r}
+```{r, echo=FALSE}
 head(hd_data) %>% kbl(caption = "Raw Data") %>% kable_classic(full_width = T, html_font = "Cambria")
 ```
 
