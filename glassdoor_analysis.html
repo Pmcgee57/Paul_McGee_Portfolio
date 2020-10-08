@@ -1614,6 +1614,9 @@ subs_sums &lt;- as.data.table(subs_sums)
 
 head &lt;- subs_sums[1:75,]
 head &lt;- as.data.frame(head)</code></pre>
+<pre class="r"><code>wordcloud(words = head$term, freq = head$count, min.freq = 1000,
+          max.words=100, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, &quot;Dark2&quot;))</code></pre>
 <p><img src="glassdoor_analysis_files/figure-html/unnamed-chunk-23-1.png" width="672" />  </p>
 </div>
 <div id="sentiment-analysis" class="section level3">

@@ -356,7 +356,7 @@ head <- subs_sums[1:75,]
 head <- as.data.frame(head)
 ```
 
-```{r, echo=FALSE}
+```{r}
 wordcloud(words = head$term, freq = head$count, min.freq = 1000,
           max.words=100, random.order=FALSE, rot.per=0.35, 
           colors=brewer.pal(8, "Dark2"))
