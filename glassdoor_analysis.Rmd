@@ -37,6 +37,11 @@ library(dplyr)
 library(plotly)
 library(ggplot2)
 library(kableExtra)
+library(tm)
+library(syuzhet)
+library(wordcloud)
+library(data.table)
+library(SentimentAnalysis)
 ```
 
 ```{r, echo = FALSE, warning=FALSE}
@@ -111,6 +116,7 @@ I'll see which industries have more analyst position postings right now. I'll vi
 data_4 <- data_3
 indus_count <- data_4 %>% count(Industry) %>% arrange(desc(n))
 indus_count <- subset(indus_count, Industry!="-1") 
+
 head(indus_count,20) %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
@@ -132,7 +138,7 @@ indus_plot <- indus_n %>% ggplot(aes(x = Industry, y = n)) + geom_col(fill = 'sk
     theme(axis.text.x = element_text(angle = 90), legend.position="none") + ylab("Number of Positions")
 ```
 ```{r, echo=FALSE,warning=FALSE}
-indus_plot
+indus_plot + ggtitle("Industries with the most Positions")
 ```
 
 &nbsp;  
@@ -161,14 +167,14 @@ avector <- names[['Industry']]
 ```
 
 These are what industries pay data analysts the most on average
-```{r, echo = FALSE}
+```{r, echo = FALSE, message=FALSE}
 Industry_avg_sal <- Sal_Indus %>%
   group_by(Industry) %>%
     summarise(avg_sal = mean(Salary)) %>% 
-      arrange(desc(avg_sal))
+      arrange(desc(avg_sal)) %>% ungroup()
 Industry_avg_sal$avg_sal<- round(Industry_avg_sal$avg_sal, 2)
 
-Industry_avg_sal  %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
+head(Industry_avg_sal,15)  %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 
 Industry_avg_sal_2 <- head(Industry_avg_sal,10)
 Industry_avg_sal_plot <- Industry_avg_sal_2 %>% ggplot(aes(x = Industry, y = avg_sal)) +
@@ -194,7 +200,7 @@ Sal_plot
 
 ### **5. What location has the most jobs for each industry**
 
-Now I'll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New YOrk would have the most positions and the most industries that are currently hiring.
+Now I'll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New York would have the most positions and the most industries that are currently hiring.
 
 ```{r, echo = FALSE}
 
@@ -205,7 +211,7 @@ data_5 <- data_5 %>% select(Salary, Comp_name, Industry, Location)
 data_5$Industry <- gsub(' [A-z ]*', '' , data_5$Industry)
 data_5$Industry <- gsub("&", "", data_5$Industry)
 data_5$Industry <- gsub(",", "", data_5$Industry)
-#droppping "-1" in Industry
+#dropping "-1" in Industry
 data_5 <- data_5[!grepl("-1", data_5$Industry), ]
 #Drop state after comma
 data_5$Location <- gsub(",.*","",data_5$Location)
@@ -232,7 +238,214 @@ loc_count_plot + theme(axis.title.x = element_blank(),
 
 &nbsp;  
 
-### **6. Conclusion**
+### **6. Text Analysis**
+
+I'm going to use the job description column for this data to perform a text analysis to view trends such as what words are used the most often in job descriptions and what programming languages appear the most often.
+
+
+**Creating a corpus**
+
+This first thing I'll do is create a corpus, which is a way of storing data to be used for textual analysis.
+```{r}
+clean_data <- data_4
+corpus <- SimpleCorpus(VectorSource(clean_data$`Job Description`))
+```
+
+
+**Cleaning the corpus**
+
+To clean the corpus to make text analysis simpler I'll make 4 changes to it.
+
+*  Remove extra white space
+*  Transform all words to lower case
+*  Remove Punctuation
+*  Removing stop words
+
+Stop words are common words of little value in text analysis, like "me, these, being," etc. They appear often and don't really provide any additional value. Here's the fill list of stop words.
+
+```{r,echo=FALSE}
+stopwords("english")
+```
+```{r, warning=FALSE, message=FALSE}
+# 1. strip white space
+dfCorpus <- tm_map(corpus, stripWhitespace)
+# 2. Transforming everything to lowercase
+dfCorpus <- tm_map(dfCorpus, content_transformer(tolower))
+# 3. Removing punctuation
+dfCorpus <- tm_map(dfCorpus, removePunctuation)
+# 4. Removing stop words
+dfCorpus <- tm_map(dfCorpus, removeWords, stopwords("english"))
+```
+
+Here's what the new job descriptions look similar towards after these changes
+```{r}
+dfCorpus[[10]]$content
+```
+
+**Creating a Document-Term Matrix to look for specific and most frequently occurring words** 
+
+A document-term matrix is a simple way to compare all the terms or words across each document. Viewing the data simply as a matrix results in each row representing a unique document and each column representing a unique term.
+
+```{r,echo=FALSE}
+DTM <- DocumentTermMatrix(dfCorpus)
+inspect(DTM)
+```
+We can see we have a total of 26182 terms used throughout the 2252 job descriptions in the data set. Now I'm going to search for the names of specific  languages to determine what languages are most common for data analyst jobs in this data.
+
+Note: R and Rstudio are not found in this method due to some type of syntax error, even after making the conversions to the corpus I made before.
+
+```{r, echo=FALSE}
+my_words <- c("python", "sql", 'excel')
+words_dtm <- DocumentTermMatrix(dfCorpus, control = list(dictionary = my_words))
+words_dtm <- data.frame(docs = words_dtm$dimnames$Docs, as.matrix(words_dtm), row.names = NULL)
+head(words_dtm) %>% kbl(caption = "Count of Language Names") %>% kable_classic(full_width = F, html_font = "Cambria")
+```
+Python, SQL and Excel all have a presence in these job descriptions. Now to see how many times they are each mentioned in and what descriptions mention all 3.
+```{r,include=FALSE}
+words_dtm_py <- words_dtm %>% filter(python >= 1)
+nrow(words_dtm_py)
+#598
+words_dtm_sql <- words_dtm %>% filter(sql >= 1)
+nrow(words_dtm_sql)
+#1318
+words_dtm_xl <- words_dtm %>% filter(excel >= 1)
+nrow(words_dtm_xl)
+#889
+words_dtm_all <- words_dtm %>% filter(excel >= 1, sql >=1, python >= 1)
+nrow(words_dtm_all)
+#190
+```
+```{r}
+# Number of descriptions that mention python
+nrow(words_dtm_py)
+
+# Number of descriptions that mention sql
+nrow(words_dtm_sql)
+
+#Number of descriptions that mention excel
+nrow(words_dtm_xl)
+
+#Number of descriptions that mention all 3 languages
+nrow(words_dtm_all)
+```
+```{r,echo=FALSE}
+lang_count <- data.frame('Language' = c('python', 'sql', 'excel', 'all'), 'count' = c(598, 1318,889,190))
+
+lang_count_plot <- lang_count %>% ggplot(aes(x = Language, y = count, fill = Language)) + geom_col() +
+  ggtitle('Language Names Counted in Job Descriptions') + ylim(0,2000) + 
+  ylab("Number of times Appeared")
+lang_count_plot
+```
+
+Good thing I've been brushing up on using SQl becasue it is the most common language mentioned in job descriptions, so we can assume it is the most popular language requested to have some knowledge of or that the position would use in this dataset.
+
+**Creating a word cloud of the most frequently appearing terms**
+
+Word Clouds can be interesting and different ways to view the words the appear most often. Here I'll visualize the 75 most common words, after removing stop words that otherwise would clutter the list.
+
+```{r}
+#creating word cloud of most frequent terms
+sums <- as.data.frame(colSums(as.matrix(DTM)))
+sums <- rownames_to_column(sums) 
+colnames(sums) <- c("term", "count")
+sums <- arrange(sums, desc(count))
+subs_sums <- sums
+subs_sums <- as.data.table(subs_sums)
+
+head <- subs_sums[1:75,]
+head <- as.data.frame(head)
+```
+
+```{r, echo=FALSE}
+wordcloud(words = head$term, freq = head$count, min.freq = 1000,
+          max.words=100, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+```
+&nbsp;  
+
+### **7. Sentiment Analysis**
+
+Sentiments are opinions or feelings about something. So, I'll use a sentiment analysis to capture the general feeling or tone which these job descriptions are written in. I'll view which companies and industries have the most positively and negatively written job descriptions. 
+
+The type of sentiment analysis I will run uses the Harvard IV dictionary to detect how many negative and positive words are contained in text data. It grades the overall, positive and negative sentiment on a scale from -1 to 1.
+
+```{r, echo=FALSE}
+sent <- analyzeSentiment(DTM, language = "english")
+
+# were going to just select the Harvard-IV dictionary results ..  
+sent <- sent[,1:4]
+
+#Organizing it as a dataframe
+sent <- as.data.frame(sent)
+sent <- as.data.table(sent)
+
+# Now lets take a look at what these sentiment values look like. 
+h_sent<- head(sent)
+h_sent  %>% kbl(caption = "Sentiment Analysis Polarity") %>% kable_classic(full_width = F, html_font = "Cambria")
+```
+
+Now I'll view the overall distribution of sentiments in this data
+```{r,echo=FALSE, message=FALSE}
+sum_sent <- summary(sent$SentimentGI)
+sum_sent
+
+#Sentiment Score Distribution
+sent %>% ggplot(aes(x = SentimentGI)) + geom_histogram() +
+  ggtitle("Distribution of Sentiment Scores") + xlab("Sentiment Score") +
+  ylab("Number of Scores") + 
+  xlim(-0.2,0.2)
+
+```
+
+We can see the sentiment appears to be in the shape of a normal distribution and is centered to be slightly more positive than a neutral sentiment of zero.
+
+**Viewing the most positive and negative job postings**
+
+I wanted to see what companies and what industries have the most polarizing job descriptions in terms of sentiment.
+First I need to bind the columns from my sentiments analysis to the rest of the data, then I can analyze them.
+
+Here are the companies with the highest and lowest sentiments in their job descriptions.
+
+```{r,echo=FALSE}
+clean_data_2 <- clean_data
+final <- bind_cols(clean_data_2, sent)
+final <- subset(final, Industry!="-1")
+```
+```{r, echo=FALSE, message=FALSE}
+#companies with highest and lowest sentiment
+top_10_comp <- final %>% group_by(Comp_name, Industry ) %>%
+  summarize(sent = mean(SentimentGI)) %>%
+  arrange(desc(sent)) %>% head(n = 10) %>% ungroup()
+top_10_comp %>% kbl(caption = "Highest Sentiment Companies") %>% kable_classic(full_width = F, html_font = "Cambria")
+
+bottom_1_comp <- final %>% group_by(Comp_name, Industry ) %>%
+  summarize(sent = mean(SentimentGI)) %>%
+  arrange(sent) %>% head(n = 10) %>% ungroup()
+bottom_1_comp %>% kbl(caption = "Lowest Sentiment Companies") %>% kable_classic(full_width = F, html_font = "Cambria")
+
+```
+
+Now the industries with the highest and lowest sentiment.
+
+```{r,echo=FALSE, message=FALSE}
+top_indus <- final %>% group_by(Industry ) %>%
+  summarize(sent = mean(SentimentGI)) %>%
+  arrange(desc(sent)) %>% head(n = 10) %>% ungroup()
+top_indus %>% kbl(caption = "Highest Sentiment Industries") %>% kable_classic(full_width = F, html_font = "Cambria")
+
+
+bottom_indus <- final %>% group_by(Industry ) %>%
+  summarize(sent = mean(SentimentGI)) %>%
+  arrange(sent) %>% head(n = 10) %>% ungroup()
+bottom_indus %>% kbl(caption = "Lowest Sentiment Companies") %>% kable_classic(full_width = F, html_font = "Cambria")
+
+```
+
+Sentiments appear pretty neutral in general. I suppose it is intuitive that you're not going to find anything too joyful or dark in a data-analyst job description.
+
+&nbsp;  
+
+### **8. Conclusion**
 
 New York is the city with the most jobs in the most industries that are hiring right now.
 
@@ -241,6 +454,10 @@ Biotech is the industry which pays the most on average out of the top 20 industr
 The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.
 
 A pessimistic estimate of the range of salaries for data analysts are between $29,000 -$112,000.
+
+SQL is the most common language that data analyst positions use in this data, with Excel and Python falling behind it. A small number of positions mention using all three. 
+
+Job descriptions overall are worded slightly positive, but are fairly neutral. It is rare you'll find any position that sounds too positive or negative overall. 
 
 &nbsp;  
 
