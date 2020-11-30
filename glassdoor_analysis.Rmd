@@ -8,7 +8,7 @@ output:
 
 &nbsp;  
 
-## Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary as well as performing text and sentiment analysis on the job descriptions.
+### Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary as well as performing text and sentiment analysis on the job descriptions.
 
 &nbsp;  
 
@@ -24,9 +24,25 @@ I am interested in finding out:
 
 &nbsp;  
 
-I'll be using visualizations of the data to help answer these questions, as well as the output of the data itself
+### **Summary of findings from this analysis**
+
+* New York is the city with the most jobs in the most industries that are hiring right now.
+
+* Biotech is the industry which pays the most on average out of the top 20 industries with the most postings, while News pays the most overall on average.
+
+* The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.
+
+* A pessimistic estimate of the range of salaries for data analysts are between $29,000 -$112,000.
+
+* SQL is the most common language that data analyst positions use in this data, with Excel and Python falling behind it. A small number of positions mention using all three. 
+
+* Job descriptions overall are worded slightly positive, but are fairly neutral. It is rare you'll find any position that sounds too positive or negative overall. 
+
+&nbsp;  
 
 ### **1. Loading in and cleaning the data**
+
+I'll take a look at the data using the glimpse() function, since head() may not print nicely because of long text strings in the fields.
 
 ```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -198,9 +214,9 @@ Sal_plot
 
 &nbsp;  
 
-### **5. What location has the most jobs for each industry**
+### **5. What location has the most jobs for each industry?**
 
-Now I'll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New York would have the most positions and the most industries that are currently hiring.
+Now I'll investigate to find out what industry in what cities have the most amount of job postings. My guess would be that New York would have the most positions and the most industries that are currently hiring.
 
 ```{r, echo = FALSE}
 
@@ -337,7 +353,7 @@ lang_count_plot <- lang_count %>% ggplot(aes(x = Language, y = count, fill = Lan
 lang_count_plot
 ```
 
-Good thing I've been brushing up on using SQl becasue it is the most common language mentioned in job descriptions, so we can assume it is the most popular language requested to have some knowledge of or that the position would use in this dataset.
+Good thing I've been brushing up on using SQL becasue it is the most common language mentioned in job descriptions, so we can assume it is the most popular language requested to have some knowledge of or that the position would use in this dataset.
 
 **Creating a word cloud of the most frequently appearing terms**
 
@@ -442,22 +458,6 @@ bottom_indus %>% kbl(caption = "Lowest Sentiment Companies") %>% kable_classic(f
 ```
 
 Sentiments appear pretty neutral in general. I suppose it is intuitive that you're not going to find anything too joyful or dark in a data-analyst job description.
-
-&nbsp;  
-
-### **8. Conclusion**
-
-New York is the city with the most jobs in the most industries that are hiring right now.
-
-Biotech is the industry which pays the most on average out of the top 20 industries with the most postings, while News pays the most overall on average.
-
-The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.
-
-A pessimistic estimate of the range of salaries for data analysts are between $29,000 -$112,000.
-
-SQL is the most common language that data analyst positions use in this data, with Excel and Python falling behind it. A small number of positions mention using all three. 
-
-Job descriptions overall are worded slightly positive, but are fairly neutral. It is rare you'll find any position that sounds too positive or negative overall. 
 
 &nbsp;  
 

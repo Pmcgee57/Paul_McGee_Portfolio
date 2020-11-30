@@ -373,8 +373,8 @@ div.tocify {
 
 
 <p> </p>
-<div id="using-data-cleaning-ggplot-and-dplyr-to-analyze-numerically-and-visually-data-analyst-positions-by-location-industry-and-salary-as-well-as-performing-text-and-sentiment-analysis-on-the-job-descriptions." class="section level2">
-<h2>Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary as well as performing text and sentiment analysis on the job descriptions.</h2>
+<div id="using-data-cleaning-ggplot-and-dplyr-to-analyze-numerically-and-visually-data-analyst-positions-by-location-industry-and-salary-as-well-as-performing-text-and-sentiment-analysis-on-the-job-descriptions." class="section level3">
+<h3>Using data cleaning, ggplot and dplyr to analyze numerically and visually data analyst positions by location, industry, and salary as well as performing text and sentiment analysis on the job descriptions.</h3>
 <p> </p>
 <p>This projects data was collected using webscraping from Glassdoor to compile data analyst positions listed across the united states.</p>
 <p>I am interested in finding out:</p>
@@ -385,9 +385,22 @@ div.tocify {
 <li>Where are most of these positions located for analyst positions, by their respective industry?</li>
 </ul>
 <p> </p>
-<p>I’ll be using visualizations of the data to help answer these questions, as well as the output of the data itself</p>
+</div>
+<div id="summary-of-findings-from-this-analysis" class="section level3">
+<h3><strong>Summary of findings from this analysis</strong></h3>
+<ul>
+<li><p>New York is the city with the most jobs in the most industries that are hiring right now.</p></li>
+<li><p>Biotech is the industry which pays the most on average out of the top 20 industries with the most postings, while News pays the most overall on average.</p></li>
+<li><p>The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.</p></li>
+<li><p>A pessimistic estimate of the range of salaries for data analysts are between $29,000 -$112,000.</p></li>
+<li><p>SQL is the most common language that data analyst positions use in this data, with Excel and Python falling behind it. A small number of positions mention using all three.</p></li>
+<li><p>Job descriptions overall are worded slightly positive, but are fairly neutral. It is rare you’ll find any position that sounds too positive or negative overall.</p></li>
+</ul>
+<p> </p>
+</div>
 <div id="loading-in-and-cleaning-the-data" class="section level3">
 <h3><strong>1. Loading in and cleaning the data</strong></h3>
+<p>I’ll take a look at the data using the glimpse() function, since head() may not print nicely because of long text strings in the fields.</p>
 <pre><code>## New names:
 ## * `` -&gt; ...1</code></pre>
 <pre><code>## Observations: 2,253
@@ -1141,8 +1154,8 @@ Internet
 <p> </p>
 </div>
 <div id="what-location-has-the-most-jobs-for-each-industry" class="section level3">
-<h3><strong>5. What location has the most jobs for each industry</strong></h3>
-<p>Now I’ll investigate to find out what industry in what cities have the most amount of jobs.My guess would be that New York would have the most positions and the most industries that are currently hiring.</p>
+<h3><strong>5. What location has the most jobs for each industry?</strong></h3>
+<p>Now I’ll investigate to find out what industry in what cities have the most amount of job postings. My guess would be that New York would have the most positions and the most industries that are currently hiring.</p>
 <table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1601,7 +1614,7 @@ nrow(words_dtm_xl)</code></pre>
 nrow(words_dtm_all)</code></pre>
 <pre><code>## [1] 190</code></pre>
 <p><img src="glassdoor_analysis_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
-<p>Good thing I’ve been brushing up on using SQl becasue it is the most common language mentioned in job descriptions, so we can assume it is the most popular language requested to have some knowledge of or that the position would use in this dataset.</p>
+<p>Good thing I’ve been brushing up on using SQL becasue it is the most common language mentioned in job descriptions, so we can assume it is the most popular language requested to have some knowledge of or that the position would use in this dataset.</p>
 <p><strong>Creating a word cloud of the most frequently appearing terms</strong></p>
 <p>Word Clouds can be interesting and different ways to view the words the appear most often. Here I’ll visualize the 75 most common words, after removing stop words that otherwise would clutter the list.</p>
 <pre class="r"><code>#creating word cloud of most frequent terms
@@ -2195,17 +2208,6 @@ Sporting Goods Stores
 </table>
 <p>Sentiments appear pretty neutral in general. I suppose it is intuitive that you’re not going to find anything too joyful or dark in a data-analyst job description.</p>
 <p> </p>
-</div>
-<div id="conclusion" class="section level3">
-<h3><strong>8. Conclusion</strong></h3>
-<p>New York is the city with the most jobs in the most industries that are hiring right now.</p>
-<p>Biotech is the industry which pays the most on average out of the top 20 industries with the most postings, while News pays the most overall on average.</p>
-<p>The top industries hiring include IT, Staffing, Health Care, Computer Hardware, Consulting and many more.</p>
-<p>A pessimistic estimate of the range of salaries for data analysts are between $29,000 -$112,000.</p>
-<p>SQL is the most common language that data analyst positions use in this data, with Excel and Python falling behind it. A small number of positions mention using all three.</p>
-<p>Job descriptions overall are worded slightly positive, but are fairly neutral. It is rare you’ll find any position that sounds too positive or negative overall.</p>
-<p> </p>
-</div>
 </div>
 
 
