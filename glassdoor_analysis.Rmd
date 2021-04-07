@@ -154,12 +154,13 @@ indus_plot <- indus_n %>% ggplot(aes(x = Industry, y = n)) + geom_col(fill = 'sk
     theme(axis.text.x = element_text(angle = 90), legend.position="none") + ylab("Number of Positions")
 ```
 ```{r, echo=FALSE,warning=FALSE}
-indus_plot + ggtitle("Industries with the most Positions")
+indus_plot + ggtitle("Industries with the Most Positions") + coord_flip() +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 &nbsp;  
 
-### **4. What do data anlysts get paid in different industries?**
+### **4. What do data analysts get paid in different industries?**
 
 Let's see how much data analysts get paid on average based on what industry they work in.
 
@@ -193,23 +194,32 @@ Industry_avg_sal$avg_sal<- round(Industry_avg_sal$avg_sal, 2)
 head(Industry_avg_sal,15)  %>% kbl %>% kable_classic(full_width = F, html_font = "Cambria")
 
 Industry_avg_sal_2 <- head(Industry_avg_sal,10)
+
 Industry_avg_sal_plot <- Industry_avg_sal_2 %>% ggplot(aes(x = Industry, y = avg_sal)) +
   geom_col(fill = 'orange', color = 'black') + 
-    labs(title = "Average Salary for Highest Paying Industries", y = "Average Salary") +
-      theme(axis.text.x = element_text(angle = 90), legend.position="none",  axis.title.x = element_blank()) 
-Industry_avg_sal_plot
+    labs(title = "Average Salary for Highest Paying Industries") +
+      theme(axis.text.x = element_text(angle = 90), legend.position="none") + xlab("Industry") + ylab("Average Salary (in thousands)")
+
+Industry_avg_sal_plot + coord_flip() +
+  theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+
+&nbsp;  
+
+
 
 Now. let's see how much the industries with the most amount of jobs posted pay data analysts.
 ```{r, echo=FALSE}
 Highest_sal <- Industry_avg_sal[Industry_avg_sal$Industry %in% avector, ]
 Sal_plot <- Highest_sal %>% ggplot(aes(x = reorder(Industry, - avg_sal), y = avg_sal)) +
-  geom_col(fill = 'mediumorchid2', color = 'black') + theme(axis.text.x = element_text(angle = 90),legend.position="none",  axis.title.x = element_blank())  + 
-  labs(title = "Average Salary for Data Analysts by Industry with most Postings") + 
+  geom_col(fill = 'mediumorchid2', color = 'black') + theme(axis.text.x = element_text(angle = 90),legend.position="none")  + 
+  labs(title = "Average Salary for Analysts by Industry with Most Postings") + 
   ylab("Average Industry Salary")  
 
-Sal_plot
+Sal_plot + coord_flip() + xlab("Industry") + ylab("Average Salary (in thousands") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 &nbsp;  
@@ -248,8 +258,7 @@ loc_count_plot <- loc_count %>% ggplot(aes(x = Industry, y = n, fill = Industry)
       ggtitle("Number of Analyst Jobs per Industry by Location") +
         theme(plot.title = element_text(hjust = 0.5)) 
 
-loc_count_plot + theme(axis.title.x = element_blank(),
-                                   axis.title.y = element_blank())
+loc_count_plot + xlab("Industry") + ylab("Number of Positions") + coord_flip() 
 ```
 
 &nbsp;  
